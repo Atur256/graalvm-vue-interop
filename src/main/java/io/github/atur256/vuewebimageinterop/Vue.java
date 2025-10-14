@@ -5,16 +5,26 @@ import org.graalvm.webimage.api.*;
 
 
 @JS.Import("Vue")
-public class JSVue {
+public class Vue extends JSObject{
 
     private static JSObject mountedInstance;
 
-    private JSVue() {
+    private Vue() {
     }
 
     @JS.Coerce
-    @JS("return Vue.createApp(options);")
-    public static native JSObject createApp(JSObject options);
+    @JS("return Vue.createApp(component);")
+    public static native VueApp createApp(Component component);
+
+    @JS.Coerce
+    @JS("return Vue.createApp(component);")
+    public static native VueApp createApp(JSObject component);
+
+
+
+
+
+
 
     @JS.Coerce
     @JS("return app.mount('#app')")

@@ -1,5 +1,6 @@
 package io.github.atur256.vuewebimageinterop;
 
+import io.github.atur256.vuewebimageinterop.simpleDemo.DemoComponent;
 import io.github.atur256.webimageinterop.builtin.JSArray;
 import io.github.atur256.webimageinterop.builtin.JSFunction;
 import org.graalvm.webimage.api.*;
@@ -91,20 +92,26 @@ public class VueDemo {
         // Define computed property — doubleCount = count * 2
         JSVueComputed<Integer> doubleCount = JSVueComputed.of("doubleCount", JSFunction.fromBody("return this.count * 2;"));
 
-        // Compose Vue options — include data, methods, template, computed, hooks, etc.
-        JSVueOptions options = JSVueOptions.create()
-                .setData(dataFn)
-                .setMethods(methods)
-                .setTemplate(html)
-                .setComputed(doubleCount)
-                .setComponents(components)
-                .setProvide(provide);
+//         Compose Vue options — include data, methods, template, computed, hooks, etc.
+//        JSObject component = JSObject.create();
+////                .setData(dataFn) // TODO: convert to fields
+////                .setMethods(methods)
+////                .setTemplate(html)
+////                .setComputed(doubleCount)
+////                .setComponents(components)
+////                .setProvide(provide);
+//
+//        component.set("data", dataFn);
+//        component.set("methods", methods);
+//        component.set("template",JSString.of(html));
+
+        DemoComponent component = new DemoComponent();
 
         // Create Vue app instance
-        JSObject app = JSVue.createApp(options);
+        VueApp app = Vue.createApp(component);
 
         // Mount app to DOM and retain reference
-        JSVue.mountAndStore(app);
+        Vue.mountAndStore(app);
     }
 
     private static String createHtmlTemplate() {
@@ -218,13 +225,13 @@ public class VueDemo {
 
         methods.set("increment", JSFunction.fromRunnable(() -> countRef.set(countRef.get() + 1)));
 
-        methods.set("reset", JSFunction.fromRunnable(() -> JSVue.setValue("count", 0)));
+        methods.set("reset", JSFunction.fromRunnable(() -> Vue.setValue("count", 0)));
 
         methods.set("appendLetter", JSFunction.fromRunnable(() -> {
-            String original = JSVue.getValue("text", String.class);
+            String original = Vue.getValue("text", String.class);
             char firstChar = original.charAt(0);
             String updated = original.substring(1) + firstChar;
-            JSVue.setValue("text", updated);
+            Vue.setValue("text", updated);
         }));
 
         methods.set("mirrorText", JSFunction.fromRunnable(() -> {
@@ -243,8 +250,8 @@ public class VueDemo {
         }));
 
         methods.set("toggleRole", JSFunction.fromRunnable(() -> {
-            boolean current = JSVue.getValue("showRole", Boolean.class);
-            JSVue.setValue("showRole", !current);
+            boolean current = Vue.getValue("showRole", Boolean.class);
+            Vue.setValue("showRole", !current);
         }));
 
         methods.set("toggleLogin", JSFunction.fromRunnable(() -> {
@@ -265,36 +272,36 @@ public class VueDemo {
             }
         }));
 
-        methods.set("toggleRed", JSFunction.fromRunnable(() -> JSVue.setValue("isRed", !JSVue.getValue("isRed", Boolean.class))));
+        methods.set("toggleRed", JSFunction.fromRunnable(() -> Vue.setValue("isRed", !Vue.getValue("isRed", Boolean.class))));
 
         methods.set("toggleColor", JSFunction.fromRunnable(() -> {
-            String current = JSVue.getValue("color", String.class);
-            JSVue.setValue("color", current.equals("green") ? "blue" : "green");
+            String current = Vue.getValue("color", String.class);
+            Vue.setValue("color", current.equals("green") ? "blue" : "green");
         }));
 
         methods.set("addItem", JSFunction.fromRunnable(() -> {
-            JSObject vue = JSVue.getMountedInstance();
+            JSObject vue = Vue.getMountedInstance();
             if(vue == null) return;
 
-            String text = JSVue.getValue("newItemText", String.class);
+            String text = Vue.getValue("newItemText", String.class);
             if(text == null || text.trim().isEmpty()) return;
 
-            int nextId = JSVue.getValue("nextId", Integer.class);
+            int nextId = Vue.getValue("nextId", Integer.class);
             JSObject newItem = JSObject.create();
             newItem.set("id", JSNumber.of(nextId));
             newItem.set("text", JSString.of(text));
 
-            JSArray list = JSVue.getValue("groceryList", JSArray.class);
+            JSArray list = Vue.getValue("groceryList", JSArray.class);
             list.push(newItem);
 
-            JSVue.setValue("groceryList", list);
-            JSVue.setValue("newItemText", "");
-            JSVue.setValue("nextId", nextId + 1);
+            Vue.setValue("groceryList", list);
+            Vue.setValue("newItemText", "");
+            Vue.setValue("nextId", nextId + 1);
         }));
 
         methods.set("removeItem", JSFunction.fromConsumer(idVal -> {
             int id = idVal.asInt();
-            JSArray list = JSVue.getValue("groceryList", JSArray.class);
+            JSArray list = Vue.getValue("groceryList", JSArray.class);
 
             JSArray filtered = JSArray.of();
             for(int i = 0; i < list.length; i++) {
@@ -303,7 +310,7 @@ public class VueDemo {
                     filtered.push(item);
                 }
             }
-            JSVue.setValue("groceryList", filtered);
+            Vue.setValue("groceryList", filtered);
         }));
 
         methods.set("toggleTheme", JSFunction.fromRunnable(() -> themeRef.set(themeRef.get().equals("dark") ? "light" : "dark")));
@@ -321,7 +328,6 @@ public class VueDemo {
                     </div>
                 """);
     }
-
 
     // Creates a timed panel component that tracks elapsed time and allows reset
     private static JSVueComponent createTimedPanel() {
@@ -426,3 +432,4 @@ public class VueDemo {
         return JSArray.of(item0, item1, item2);
     }
 }
+
