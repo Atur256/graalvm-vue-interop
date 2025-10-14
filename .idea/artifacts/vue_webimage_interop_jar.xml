@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="vue-webimage-interop:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/vue_webimage_interop_jar</output-path>
+    <root id="archive" name="vue-webimage-interop.jar">
+      <element id="module-output" name="vue-webimage-interop" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/graalvm/webimage/webimage-preview/21.0.0/webimage-preview-21.0.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/graalvm/sdk/sdk-test/21.0.0/sdk-test-21.0.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/graalvm/nativeimage/nativeimage-libgraal/21.0.0/nativeimage-libgraal-21.0.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/oracle/webinterop/web-image-interop/1.0.0/web-image-interop-1.0.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/annotations/26.0.2-1/annotations-26.0.2-1.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
