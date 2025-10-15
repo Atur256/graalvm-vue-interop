@@ -1,5 +1,7 @@
 package io.github.atur256.vuewebimageinterop;
 
+import io.github.atur256.vuewebimageinterop.reworkedCode.Component;
+import io.github.atur256.vuewebimageinterop.reworkedCode.VueApp;
 import io.github.atur256.webimageinterop.builtin.JSEval;
 import org.graalvm.webimage.api.*;
 
@@ -20,8 +22,7 @@ public class Vue extends JSObject{
     @JS("return Vue.createApp(component);")
     public static native VueApp createApp(JSObject component);
 
-
-
+    // TODO: https://vuejs.org/api/application.html#createapp
 
 
 

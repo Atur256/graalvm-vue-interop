@@ -1,22 +1,21 @@
 package io.github.atur256.vuewebimageinterop;
 
-import io.github.atur256.vuewebimageinterop.simpleDemo.DemoComponent;
-import org.graalvm.webimage.api.JS;
-import org.graalvm.webimage.api.JSObject;
+import io.github.atur256.vuewebimageinterop.demos.childComponentDemo.ChildComponent;
+import io.github.atur256.vuewebimageinterop.demos.childComponentDemo.ChildComponentDemo;
+import io.github.atur256.vuewebimageinterop.reworkedCode.VueApp;
+import io.github.atur256.vuewebimageinterop.demos.simpleDemo.DemoComponent;
 
 
 public class Main {
 
     public static void main(String[] args) {
 
-        System.out.println(new VueApp());
+        // Note: every Component that does not exist 1:1 in JS needs to be called at least once, otherwise it will be removed by the compiler and therefore fail
+        new VueApp();
+        new DemoComponent();
+        new io.github.atur256.vuewebimageinterop.demos.childComponentDemo.DemoComponent();
+        new ChildComponent();
 
-        VueDemo.main(null);
-
-        test(new DemoComponent());
+        ChildComponentDemo.main(null);
     }
-
-
-    @JS(value = "console.log(x.data());")
-    public static native void test(JSObject x);
 }

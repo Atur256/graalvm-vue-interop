@@ -1,4 +1,4 @@
-package io.github.atur256.vuewebimageinterop;
+package io.github.atur256.vuewebimageinterop.reworkedCode;
 
 import io.github.atur256.webimageinterop.builtin.JSFunction;
 import org.graalvm.webimage.api.JSObject;
@@ -9,6 +9,7 @@ public abstract class Component extends JSObject {
 
     public JSObject methods = null;
     public JSString template = null;
+    public JSObject props = null;
     public JSObject computed = null;
     public JSObject components = null;
     public JSObject provide = null;
