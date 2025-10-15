@@ -1,8 +1,8 @@
-package io.github.atur256.vuewebimageinterop;
+package io.github.atur256.vuewebimageinterop.oldClasses;
 
 import io.github.atur256.vuewebimageinterop.demos.childComponentDemo.ChildComponent;
-import io.github.atur256.vuewebimageinterop.demos.childComponentDemo.ChildComponentDemo;
-import io.github.atur256.vuewebimageinterop.reworkedCode.VueApp;
+import io.github.atur256.vuewebimageinterop.demos.simpleDemo.SimpleDemo;
+import io.github.atur256.vuewebimageinterop.reworkedClasses.VueApp;
 import io.github.atur256.vuewebimageinterop.demos.simpleDemo.DemoComponent;
 
 
@@ -16,6 +16,6 @@ public class Main {
         new io.github.atur256.vuewebimageinterop.demos.childComponentDemo.DemoComponent();
         new ChildComponent();
 
-        ChildComponentDemo.main(null);
+        SimpleDemo.main(null);
     }
 }

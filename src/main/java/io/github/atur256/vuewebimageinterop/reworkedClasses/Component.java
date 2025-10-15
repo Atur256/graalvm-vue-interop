@@ -1,4 +1,4 @@
-package io.github.atur256.vuewebimageinterop.reworkedCode;
+package io.github.atur256.vuewebimageinterop.reworkedClasses;
 
 import io.github.atur256.webimageinterop.builtin.JSFunction;
 import org.graalvm.webimage.api.JSObject;

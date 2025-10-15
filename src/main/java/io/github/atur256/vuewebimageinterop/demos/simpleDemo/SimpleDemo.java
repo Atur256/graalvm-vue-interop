@@ -1,8 +1,8 @@
 package io.github.atur256.vuewebimageinterop.demos.simpleDemo;
 
-import io.github.atur256.vuewebimageinterop.reworkedCode.Component;
-import io.github.atur256.vuewebimageinterop.Vue;
-import io.github.atur256.vuewebimageinterop.reworkedCode.VueApp;
+import io.github.atur256.vuewebimageinterop.reworkedClasses.Component;
+import io.github.atur256.vuewebimageinterop.oldClasses.Vue;
+import io.github.atur256.vuewebimageinterop.reworkedClasses.VueApp;
 
 
 public class SimpleDemo {
@@ -11,6 +11,7 @@ public class SimpleDemo {
 
         Component component = new DemoComponent();
         VueApp app = Vue.createApp(component);
+//        Vue.mountAndStore(app);
         app.mount();
     }
 }

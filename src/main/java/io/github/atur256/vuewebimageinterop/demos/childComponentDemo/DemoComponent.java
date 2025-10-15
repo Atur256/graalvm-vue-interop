@@ -1,9 +1,7 @@
 package io.github.atur256.vuewebimageinterop.demos.childComponentDemo;
 
-import io.github.atur256.vuewebimageinterop.Vue;
-import io.github.atur256.vuewebimageinterop.reworkedCode.Component;
-import io.github.atur256.vuewebimageinterop.reworkedCode.VueApp;
-import io.github.atur256.webimageinterop.builtin.JSArray;
+import io.github.atur256.vuewebimageinterop.reworkedClasses.Component;
+import io.github.atur256.vuewebimageinterop.reworkedClasses.VueApp;
 import io.github.atur256.webimageinterop.builtin.JSFunction;
 import org.graalvm.webimage.api.JSObject;
 import org.graalvm.webimage.api.JSString;
@@ -42,7 +40,7 @@ public class DemoComponent extends Component {
     private static class Methods extends JSObject {
 
         public JSFunction handleChildEvent = JSFunction.fromConsumer(payload -> {
-            Vue.setValue("messageFromChild", JSValue.checkedCoerce(payload, String.class));
+            VueApp.setValue("messageFromChild", JSValue.checkedCoerce(payload, String.class));
         });
 
 

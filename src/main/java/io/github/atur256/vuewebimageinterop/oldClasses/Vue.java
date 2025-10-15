@@ -1,7 +1,7 @@
-package io.github.atur256.vuewebimageinterop;
+package io.github.atur256.vuewebimageinterop.oldClasses;
 
-import io.github.atur256.vuewebimageinterop.reworkedCode.Component;
-import io.github.atur256.vuewebimageinterop.reworkedCode.VueApp;
+import io.github.atur256.vuewebimageinterop.reworkedClasses.Component;
+import io.github.atur256.vuewebimageinterop.reworkedClasses.VueApp;
 import io.github.atur256.webimageinterop.builtin.JSEval;
 import org.graalvm.webimage.api.*;
 
@@ -9,7 +9,7 @@ import org.graalvm.webimage.api.*;
 @JS.Import("Vue")
 public class Vue extends JSObject{
 
-    private static JSObject mountedInstance;
+    private static VueApp mountedInstance;
 
     private Vue() {
     }
@@ -29,7 +29,7 @@ public class Vue extends JSObject{
 
     @JS.Coerce
     @JS("return app.mount('#app')")
-    public static native JSObject mountApp(JSObject app);
+    public static native VueApp mountApp(JSObject app);
 
     @JS.Coerce
     @JS(value = "return app.mount(selector)")

@@ -1,4 +1,4 @@
-package io.github.atur256.vuewebimageinterop;
+package io.github.atur256.vuewebimageinterop.oldClasses;
 
 import io.github.atur256.webimageinterop.builtin.JSArray;
 import org.graalvm.webimage.api.*;
