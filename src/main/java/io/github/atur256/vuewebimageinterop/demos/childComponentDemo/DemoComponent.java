@@ -42,8 +42,6 @@ public class DemoComponent extends Component {
         public JSFunction handleChildEvent = JSFunction.fromConsumer(payload -> {
             VueApp.setValue("messageFromChild", JSValue.checkedCoerce(payload, String.class));
         });
-
-
     }
 
     private static class Components extends JSObject {

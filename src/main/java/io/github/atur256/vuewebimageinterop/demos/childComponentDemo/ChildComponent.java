@@ -31,14 +31,13 @@ public class ChildComponent extends Component {
     }
 
     private static class Methods extends JSObject {
-        // TODO: Replace by a java function
-        public JSFunction sendMessage = JSFunction.fromBody("this.$emit('childEvent', 'Hello Parent! (from Child)');");
 
+        // TODO: Replace this by a java function
+        public JSFunction sendMessage = JSFunction.fromBody("this.$emit('childEvent', 'Hello Parent! (from Child)');");
     }
 
     public static class Props extends JSObject {
 
         public JSString parentMessage;
     }
-
 }

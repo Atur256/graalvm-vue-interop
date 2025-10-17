@@ -1,5 +1,6 @@
 package io.github.atur256.vuewebimageinterop.reworkedClasses;
 
+import io.github.atur256.webimageinterop.builtin.JSFunction;
 import org.graalvm.webimage.api.*;
 
 
@@ -25,6 +26,14 @@ public class VueApp extends JSObject {
         unmountJS();
     }
 
+    @JS.Coerce
+    @JS("this.onUnmount(callback)")
+    public native void onUnmountJS(JSFunction callback);
+
+    @JS.Coerce
+    @JS("this.provide(...keys)")
+    public native void provide(String... keys);
+
     public static Object getValue(String key) {
         return mountedInstance.get(key);
     }
@@ -33,23 +42,14 @@ public class VueApp extends JSObject {
         return JSValue.checkedCoerce(mountedInstance.get(key), cls);
     }
 
-    public static void setValue(String key, int value) {
-        mountedInstance.set(key, JSNumber.of(value));
-    }
-
-    public static void setValue(String key, double value) {
-        mountedInstance.set(key, JSNumber.of(value));
-    }
-
-    public static void setValue(String key, boolean value) {
-        mountedInstance.set(key, JSBoolean.of(value));
-    }
-
-    public static void setValue(String key, String value) {
-        mountedInstance.set(key, JSString.of(value));
-    }
-
-    public static void setValue(String key, JSObject value) {
-        mountedInstance .set(key, value);
+    public static void setValue(String key, Object value) {
+        switch (value) {
+            case Integer i -> mountedInstance.set(key, JSNumber.of(i));
+            case Double d -> mountedInstance.set(key, JSNumber.of(d));
+            case Boolean b -> mountedInstance.set(key, JSBoolean.of(b));
+            case String s -> mountedInstance.set(key, JSString.of(s));
+            case JSObject o -> mountedInstance.set(key, o);
+            default -> throw new IllegalArgumentException("Unsupported type: " + value.getClass());
+        }
     }
 }

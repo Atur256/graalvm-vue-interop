@@ -23,5 +23,4 @@ public class DemoChildComponent extends Component {
 
         public JSString message;
     }
-
 }

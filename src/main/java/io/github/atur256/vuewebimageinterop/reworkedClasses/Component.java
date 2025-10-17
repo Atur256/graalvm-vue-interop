@@ -7,11 +7,12 @@ import org.graalvm.webimage.api.JSString;
 
 public abstract class Component extends JSObject {
 
-    public JSObject methods = null;
     public JSString template = null;
-    public JSObject props = null;
-    public JSObject computed = null;
+    public JSObject methods = null;
     public JSObject components = null;
+    public JSObject props = null;
+    public JSObject inject = null;
+    public JSObject computed = null;
     public JSObject provide = null;
     protected JSObject data = JSFunction.fromSupplier(this::data);
 
