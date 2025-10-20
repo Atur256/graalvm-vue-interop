@@ -1,4 +1,4 @@
-package io.github.atur256.vuewebimageinterop.demos.computedDemo;
+package io.github.atur256.vuewebimageinterop.demos.computeddemo;
 
 import io.github.atur256.vuewebimageinterop.reworkedClasses.*;
 import io.github.atur256.webimageinterop.builtin.JSFunction;

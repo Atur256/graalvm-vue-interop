@@ -1,4 +1,4 @@
-package io.github.atur256.vuewebimageinterop.demos.reactiveDemo;
+package io.github.atur256.vuewebimageinterop.demos.reactivedemo;
 
 import io.github.atur256.vuewebimageinterop.reworkedClasses.Component;
 import io.github.atur256.vuewebimageinterop.reworkedClasses.Vue;

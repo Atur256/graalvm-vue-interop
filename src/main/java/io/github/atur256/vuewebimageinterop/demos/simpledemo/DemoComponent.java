@@ -1,4 +1,4 @@
-package io.github.atur256.vuewebimageinterop.demos.simpleDemo;
+package io.github.atur256.vuewebimageinterop.demos.simpledemo;
 
 import io.github.atur256.vuewebimageinterop.reworkedClasses.Component;
 import io.github.atur256.vuewebimageinterop.reworkedClasses.VueApp;

@@ -1,6 +1,6 @@
-package io.github.atur256.vuewebimageinterop.demos.mountUnmountDemo;
+package io.github.atur256.vuewebimageinterop.demos.mountunmountdemo;
 
-import io.github.atur256.vuewebimageinterop.demos.simpleDemo.DemoComponent;
+import io.github.atur256.vuewebimageinterop.demos.simpledemo.DemoComponent;
 import io.github.atur256.vuewebimageinterop.reworkedClasses.Component;
 import io.github.atur256.vuewebimageinterop.reworkedClasses.Vue;
 import io.github.atur256.vuewebimageinterop.reworkedClasses.VueApp;
