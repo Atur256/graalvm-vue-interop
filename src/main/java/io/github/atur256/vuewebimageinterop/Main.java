@@ -1,14 +1,16 @@
 package io.github.atur256.vuewebimageinterop;
 
 import io.github.atur256.vuewebimageinterop.demos.fullComponentDemo.ChildChildComponent;
-import io.github.atur256.vuewebimageinterop.demos.fullComponentDemo.FullComponentDemo;
+import io.github.atur256.vuewebimageinterop.demos.handnexttickdemo.HAndNextTickDemo;
+import io.github.atur256.vuewebimageinterop.demos.shoppinglistdemo.ShoppingListDemo;
+import io.github.atur256.vuewebimageinterop.demos.vuecomponentusedemo.VueComponentUseDemo;
 import io.github.atur256.vuewebimageinterop.reworkedClasses.VueApp;
 import io.github.atur256.vuewebimageinterop.reworkedClasses.VueRef;
 
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
         // Note: every Component that does not exist 1:1 in JS needs to be called at least once, otherwise it will be removed by the compiler and therefore fail
         new VueApp();
@@ -20,6 +22,6 @@ public class Main {
         new io.github.atur256.vuewebimageinterop.demos.fullComponentDemo.ChildComponent();
         new ChildChildComponent();
 
-        FullComponentDemo.main(null);
+        HAndNextTickDemo.main(null);
     }
 }

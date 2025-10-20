@@ -43,7 +43,7 @@ public class VueApp extends JSObject {
     }
 
     public static void setValue(String key, Object value) {
-        switch (value) {
+        switch(value) {
             case Integer i -> mountedInstance.set(key, JSNumber.of(i));
             case Double d -> mountedInstance.set(key, JSNumber.of(d));
             case Boolean b -> mountedInstance.set(key, JSBoolean.of(b));
@@ -52,4 +52,12 @@ public class VueApp extends JSObject {
             default -> throw new IllegalArgumentException("Unsupported type: " + value.getClass());
         }
     }
+
+    @JS.Coerce
+    @JS("this.component(name, definition)")
+    public native void component(String name, JSObject definition);
+
+    @JS.Coerce
+    @JS("this.use(plugin)")
+    public native void use(JSObject plugin);
 }

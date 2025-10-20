@@ -30,6 +30,7 @@ public record VueRef(JSObject jsRef) {
             case Boolean b -> jsRef.set("value", JSBoolean.of(b));
             case String s -> jsRef.set("value", JSString.of(s));
             case JSObject o -> jsRef.set("value", o);
+            case JSValue j -> jsRef.set("value", j);
             default -> throw new IllegalArgumentException("Unsupported type: " + value.getClass());
         }
         return this;
