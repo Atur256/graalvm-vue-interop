@@ -14,6 +14,8 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException {
 
+        // TODO: add html and css file for the examples to this project (currently they are in the web-image dir)
+
         // Note: every Component that does not exist 1:1 in JS needs to be called at least once, otherwise it will be removed by the compiler and therefore fail
         new VueApp();
         new VueRef();
