@@ -1,8 +1,8 @@
 package io.github.atur256.vuewebimageinterop.demos.fullcomponentdemo;
 
-import io.github.atur256.vuewebimageinterop.reworkedClasses.Component;
-import io.github.atur256.vuewebimageinterop.reworkedClasses.Vue;
-import io.github.atur256.vuewebimageinterop.reworkedClasses.VueApp;
+import io.github.atur256.vuewebimageinterop.api.Component;
+import io.github.atur256.vuewebimageinterop.api.Vue;
+import io.github.atur256.vuewebimageinterop.api.VueApp;
 
 
 public class FullComponentDemo {

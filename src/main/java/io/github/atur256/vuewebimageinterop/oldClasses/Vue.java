@@ -1,7 +1,7 @@
 package io.github.atur256.vuewebimageinterop.oldClasses;
 
-import io.github.atur256.vuewebimageinterop.reworkedClasses.Component;
-import io.github.atur256.vuewebimageinterop.reworkedClasses.VueApp;
+import io.github.atur256.vuewebimageinterop.api.Component;
+import io.github.atur256.vuewebimageinterop.api.VueApp;
 import io.github.atur256.webimageinterop.builtin.JSEval;
 import org.graalvm.webimage.api.*;
 

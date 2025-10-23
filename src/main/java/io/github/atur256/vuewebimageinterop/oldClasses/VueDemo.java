@@ -1,7 +1,7 @@
 package io.github.atur256.vuewebimageinterop.oldClasses;
 
-import io.github.atur256.vuewebimageinterop.reworkedClasses.VueApp;
-import io.github.atur256.vuewebimageinterop.demos.simpledemo.DemoComponent;
+import io.github.atur256.vuewebimageinterop.api.VueApp;
+import io.github.atur256.vuewebimageinterop.examples.simplecounter.MainComponent;
 import io.github.atur256.webimageinterop.builtin.JSArray;
 import io.github.atur256.webimageinterop.builtin.JSFunction;
 import org.graalvm.webimage.api.*;
@@ -106,7 +106,7 @@ public class VueDemo {
 //        component.set("methods", methods);
 //        component.set("template",JSString.of(html));
 
-        DemoComponent component = new DemoComponent();
+        MainComponent component = new MainComponent();
 
         // Create Vue app instance
         VueApp app = Vue.createApp(component);

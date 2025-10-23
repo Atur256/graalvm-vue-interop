@@ -1,6 +1,6 @@
 package io.github.atur256.vuewebimageinterop.demos.fullcomponentdemo;
 
-import io.github.atur256.vuewebimageinterop.reworkedClasses.Component;
+import io.github.atur256.vuewebimageinterop.api.Component;
 import io.github.atur256.webimageinterop.builtin.JSArray;
 import org.graalvm.webimage.api.JSString;
 

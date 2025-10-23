@@ -1,7 +1,7 @@
 package io.github.atur256.vuewebimageinterop.demos.handnexttickdemo;
 
-import io.github.atur256.vuewebimageinterop.reworkedClasses.Component;
-import io.github.atur256.vuewebimageinterop.reworkedClasses.Vue;
+import io.github.atur256.vuewebimageinterop.api.Component;
+import io.github.atur256.vuewebimageinterop.api.Vue;
 import io.github.atur256.webimageinterop.builtin.JSFunction;
 import org.graalvm.webimage.api.JSObject;
 import org.graalvm.webimage.api.JSString;

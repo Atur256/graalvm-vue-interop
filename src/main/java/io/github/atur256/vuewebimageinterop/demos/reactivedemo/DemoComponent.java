@@ -1,7 +1,7 @@
 package io.github.atur256.vuewebimageinterop.demos.reactivedemo;
 
-import io.github.atur256.vuewebimageinterop.reworkedClasses.Component;
-import io.github.atur256.vuewebimageinterop.reworkedClasses.VueReactive;
+import io.github.atur256.vuewebimageinterop.api.Component;
+import io.github.atur256.vuewebimageinterop.api.VueReactive;
 import io.github.atur256.webimageinterop.builtin.JSFunction;
 import org.graalvm.webimage.api.JSObject;
 import org.graalvm.webimage.api.JSString;
