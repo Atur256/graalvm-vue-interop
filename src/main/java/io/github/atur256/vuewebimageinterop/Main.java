@@ -22,43 +22,36 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException {
 
-        // TODO: add html and css file for the examples to this project (currently they are in the web-image dir)
-
-        // Note: every Component that does not exist 1:1 in JS needs to be called at least once, otherwise it will be removed by the compiler and therefore fail
+        // Important: Vue components that do not have a direct 1:1 mapping in JavaScript
+        // must be instantiated at least once in Java to ensure they are retained during compilation.
+        // Otherwise, they may be stripped out by the compiler as unused code.
         new VueApp();
-//        new VueRef();
-//        new RootComponent();
-//        new ParentComponent();
-//        new MessageReceiverComponent();
-//        new InjectedMessageComponent();
 
 
-        // Examples
+        // === Examples ===
 
-        // Basics
+        // === Basics ===
+//        HelloWorldExample.main(null);         // Simple "Hello World" component
 
-//        HelloWorldExample.main(null);
+//        CounterExample.main(null);            // Reactive counter with VueRef
 
-//        CounterExample.main(null);
+//        RootComponent.main(null);             // Root wrapper for counter example
 
-        // Reactive
+        // === Reactivity ===
+//        LifecycleHooksExample.main(null);     // Demonstrates Vue lifecycle hooks
 
-//        LifecycleHooksExample.main(null);
+//        RenderNextTickExample.main(null);     // Shows render timing with nextTick
 
-//        RenderNextTickExample.main(null);
+//        ReactiveWatchExample.main(null);      // WatchEffect and reactive state
 
-//        ReactiveWatchExample.main(null);
+        // === Composition API ===
+//        ComponentHierarchyExample.main(null); // Parent-child component structure
 
-        // Composition
+//        GlobalComponentPluginExample.main(null); // Global plugin registration
 
-//        ComponentHierarchyExample.main(null);
+        // === Advanced Examples ===
+//        ShoppingListExample.main(null);       // Interactive shopping list with state
 
-//        GlobalComponentPluginExample.main(null);
-
-        // Advanced
-
-//        ShoppingListExample.main(null);
-
-        SVGGraphExample.main(null);
+        SVGGraphExample.main(null);        // A dynamic SVG graph rendered via Vue
     }
 }
