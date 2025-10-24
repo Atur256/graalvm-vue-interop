@@ -32,7 +32,7 @@ public record VueRef(JSObject jsRef) {
     /**
      * Returns the underlying JSObject representing the ref.
      */
-    public JSObject unwrap() {
+    public JSObject getRef() {
         return jsRef;
     }
 

@@ -3,6 +3,7 @@ package io.github.atur256.vuewebimageinterop.api;
 import io.github.atur256.webimageinterop.builtin.JSFunction;
 import org.graalvm.webimage.api.*;
 
+
 /**
  * Represents a Vue application instance created via {@link Vue#createApp(Component)}.
  * <p>
@@ -89,13 +90,22 @@ public class VueApp extends JSObject {
      */
     @JS.Coerce
     @JS("this.component(name, definition)")
-    public native void component(String name, JSObject definition);
+    private native void componentJS(String name, JSObject definition);
 
+    public VueApp component(String name, JSObject definition) {
+        this.componentJS(name, definition);
+        return this;
+    }
 
     /**
      * Installs a plugin into the app.
      */
     @JS.Coerce
     @JS("this.use(plugin)")
-    public native void use(JSObject plugin);
+    private native void useJS(JSObject plugin);
+
+    public VueApp use(JSObject plugin) {
+        this.useJS(plugin);
+        return this;
+    }
 }

@@ -26,7 +26,7 @@ public record VueReactive(JSObject jsReactive) {
     /**
      * Returns the underlying reactive JSObject.
      */
-    public JSObject unwrap() {
+    public JSObject getReactive() {
         return jsReactive;
     }
 
