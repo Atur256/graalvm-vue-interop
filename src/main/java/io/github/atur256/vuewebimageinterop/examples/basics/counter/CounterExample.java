@@ -9,7 +9,7 @@ import io.github.atur256.vuewebimageinterop.api.Vue;
  * <p>
  * Demonstrates:
  * <ul>
- *   <li>Reactive state via {@code data()}</li>
+ *   <li>Reactive state via the {@code data()} method</li>
  *   <li>Event handling via {@code methods}</li>
  *   <li>Manual component definition in Java</li>
  * </ul>

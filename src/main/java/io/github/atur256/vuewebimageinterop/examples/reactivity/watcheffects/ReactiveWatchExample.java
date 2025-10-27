@@ -10,7 +10,7 @@ import io.github.atur256.vuewebimageinterop.api.Vue;
  * Demonstrates:
  * <ul>
  *   <li>Reactive state via {@code Vue.ref}</li>
- *   <li>Computed property via {@code Vue.computedRef}</li>
+ *   <li>Computed properties via {@code Vue.computedRef}</li>
  *   <li>Side effect tracking via {@code Vue.watch} and {@code Vue.watchEffect}</li>
  * </ul>
  */

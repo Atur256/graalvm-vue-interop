@@ -5,6 +5,7 @@ import io.github.atur256.vuewebimageinterop.api.VueApp;
 import io.github.atur256.webimageinterop.builtin.JSFunction;
 import org.graalvm.webimage.api.JSObject;
 import org.graalvm.webimage.api.JSString;
+import org.graalvm.webimage.api.JSValue;
 
 
 /**
@@ -12,7 +13,7 @@ import org.graalvm.webimage.api.JSString;
  * <p>
  * Demonstrates:
  * <ul>
- *   <li>Accessing global properties via {@code $root.globalMessage}</li>
+ *   <li>Accessing global properties injected via a plugin</li>
  *   <li>Passing props to a child component</li>
  *   <li>Receiving events from child via {@code @childEvent}</li>
  * </ul>
@@ -20,34 +21,28 @@ import org.graalvm.webimage.api.JSString;
 public class AppRootComponent extends Component {
 
     public AppRootComponent() {
-
-        // Vue template: displays global and local messages, renders child component
+        // Vue template: global message, parent message, child component
         this.template = JSString.of("""
                 <div>
-                  <h2>VueApp with Component & Plugin</h2>
-                  <p>Global Message: {{ $root.globalMessage }}</p>
-                  <p>Parent Message: {{ parentMessage }}</p>
-                  <p>Message from Child: {{ childResponseMessage }}</p>
-                  <child-component :messageFromParent="parentMessage" @childEvent="onChildMessage"/>
+                    <h2>VueApp with Component & Plugin</h2>
+                    <p>Global Message: {{ $root.globalMessage }}</p>
+                    <p>Parent Message: {{ parentMessage }}</p>
+                    <p>Message from Child: {{ childResponseMessage }}</p>
+                    <child-component :messageFromParent="parentMessage" @childEvent="onChildMessage"/>
                 </div>
                 """);
 
-        // Vue method bindings: onChildMessage logic
+        // Vue method bindings
         this.methods = new Methods();
     }
 
     /**
-     * Overrides Component.data() to expose reactive state:
-     * - parentMessage: string passed to the child component
-     * - childResponseMessage: string passed from the child component
+     * Reactive state for template bindings.
      */
     public JSObject data() {
         return new Data();
     }
 
-    /**
-     * Data defines the reactive state model for this component.
-     */
     private static class Data extends JSObject {
 
         public JSString parentMessage = JSString.of("Hello from Parent!");
@@ -55,14 +50,25 @@ public class AppRootComponent extends Component {
     }
 
     /**
-     * Methods defines Vue event handlers.
-     * These are bound to template actions via @childEvent.
+     * Vue methods handling events from the child component.
      */
     private static class Methods extends JSObject {
 
         public JSFunction onChildMessage = JSFunction.fromConsumer((JSString msg) -> {
             System.out.println("Parent received event: " + msg.asString());
             VueApp.setValue("childResponseMessage", msg.asString());
+        });
+    }
+
+    /**
+     * Plugin to inject a global property into the Vue app.
+     */
+    public static class Plugin extends JSObject {
+
+        public JSFunction install = JSFunction.fromConsumer((JSObject app) -> {
+            JSObject config = JSValue.checkedCoerce(app.get("config"), JSObject.class);
+            JSObject globalProperties = JSValue.checkedCoerce(config.get("globalProperties"), JSObject.class);
+            globalProperties.set("globalMessage", "Hello from plugin!");
         });
     }
 }

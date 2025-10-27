@@ -16,52 +16,50 @@ import org.graalvm.webimage.api.JSValue;
  * Demonstrates:
  * <ul>
  *   <li>Reactive state via {@code data()}</li>
- *   <li>Dynamic rendering of child components via {@code v-for}</li>
- *   <li>Event handling for add/remove actions</li>
+ *   <li>Dynamic rendering of <list-item> components via {@code v-for}</li>
+ *   <li>Event handling for adding and removing items</li>
  * </ul>
  */
 public class RootComponent extends Component {
 
     public RootComponent() {
-
         // Vue template: input field, add button, and dynamic list of <list-item> components
         this.template = JSString.of("""
                 <div class="app">
                     <h1>Grocery List</h1>
-                        <input v-model="newItemText">
-                        <button @click="addItem()">Add Item</button>
-                        <list-item
-                          v-for="(item, index) in shoppingList"
-                          :item="item"
-                          :index="index"
-                          :key="item.id"
-                          @remove="removeItem"
-                        >
-                        </list-item>
-                
-                        <hr />
-                  </div>
+                    <input v-model="newItemText">
+                    <button @click="addItem()">Add Item</button>
+                    <list-item
+                      v-for="(item, index) in shoppingList"
+                      :item="item"
+                      :index="index"
+                      :key="item.id"
+                      @remove="removeItem">
+                    </list-item>
+                </div>
                 """);
 
-        // Vue method bindings: add/remove item
+        // Bind Vue methods
         this.methods = new Methods();
 
-        // Register child component <list-item>
+        // Register child components
         this.components = new Components();
     }
 
     /**
-     * Overrides Component.data() to expose reactive state:
-     * - shoppingList: array of items
-     * - newItemText: input field binding
-     * - nextId: counter for unique item IDs
+     * Provides reactive state for this component:
+     * <ul>
+     *   <li>{@code shoppingList} – array of items</li>
+     *   <li>{@code newItemText} – input field binding</li>
+     *   <li>{@code nextId} – counter for unique item IDs</li>
+     * </ul>
      */
     public JSObject data() {
         return new Data();
     }
 
     /**
-     * Data defines the reactive state model for this component.
+     * Reactive state model for the shopping list component.
      */
     private static class Data extends JSObject {
 
@@ -71,17 +69,13 @@ public class RootComponent extends Component {
     }
 
     /**
-     * Methods defines Vue event handlers.
-     * These are bound to template actions via @click and @remove.
+     * Vue method bindings for add/remove actions.
      */
     private static class Methods extends JSObject {
 
-        // Adds a new item to the shopping list
         public JSFunction addItem = JSFunction.fromRunnable(() -> {
             String itemText = VueApp.getValue("newItemText", String.class);
-            if(itemText == null || itemText.trim().isEmpty()) {
-                return;
-            }
+            if(itemText == null || itemText.trim().isEmpty()) return;
 
             VueApp.setValue("newItemText", "");
             int nextId = VueApp.getValue("nextId", Integer.class) + 1;
@@ -92,10 +86,8 @@ public class RootComponent extends Component {
             shoppingList.push(newItem);
         });
 
-        // Removes an item from the shopping list by ID
         public JSFunction removeItem = JSFunction.fromConsumer(idVal -> {
             int id = idVal.asInt();
-
             JSArray shoppingList = VueApp.getValue("shoppingList", JSArray.class);
 
             int index = -1;
@@ -107,37 +99,30 @@ public class RootComponent extends Component {
                 }
             }
 
-            if(index < 0) {
-                return;
-            }
-
-            shoppingList.splice(index, 1);
+            if(index >= 0) shoppingList.splice(index, 1);
         });
     }
 
     /**
-     * Components registers child components used in the template.
+     * Registers child components used in the template.
      */
     private static class Components extends JSObject {
 
         public Component listItem = new ShoppingListComponent();
     }
 
-    // Creates the initial array of shopping list items
     private static JSArray createShoppingList() {
-        JSObject item0 = createItem(0, "Vegetables");
-        JSObject item1 = createItem(1, "Cheese");
-        JSObject item2 = createItem(2, "Whatever else humans are supposed to eat");
-
-        return JSArray.of(item0, item1, item2);
+        return JSArray.of(
+                createItem(0, "Vegetables"),
+                createItem(1, "Cheese"),
+                createItem(2, "Whatever else humans are supposed to eat")
+        );
     }
 
-    // Creates a shopping list item with ID and text
     private static JSObject createItem(int id, String text) {
         JSObject item = JSObject.create();
         item.set("id", JSNumber.of(id));
         item.set("text", JSString.of(text));
-
         return item;
     }
 }

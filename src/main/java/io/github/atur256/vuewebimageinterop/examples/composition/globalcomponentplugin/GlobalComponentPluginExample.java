@@ -41,7 +41,7 @@ public class GlobalComponentPluginExample {
     /**
      * Plugin that injects a global property into the Vue app.
      * <p>
-     * Sets {@code app.config.globalProperties.globalMessage}, which can be accessed via {@code $root.globalMessage}.
+     * Sets {@code app.config.globalProperties.globalMessage}, accessible via {@code $root.globalMessage}.
      */
     private static class Plugin extends JSObject {
 

@@ -8,17 +8,16 @@ import org.graalvm.webimage.api.JSString;
 /**
  * RootComponent is the root Vue component for this GraalVM-based Hello World example.
  * <p>
- * It mirrors the official Vue Hello World demo:
- * <a href="https://vuejs.org/examples/#hello-world">vuejs.org/examples/#hello-world</a>
+ * This component overrides key fields from the abstract {@code Component} class:
+ * {@code template} and {@code data()}.
  * <p>
- * This component overrides key fields from the abstract {@code Component} class: {@code template} and {@code data}.
- * The template renders a simple heading bound to a reactive message, showcasing minimal Vue interop in Java.
+ * The template renders a simple heading bound to a reactive message,
+ * demonstrating minimal Vue interop in Java.
  */
 public class RootComponent extends Component {
 
     public RootComponent() {
-
-        // Vue template: renders a heading bound to the reactive "message" property
+        // Define the Vue template: a heading bound to the reactive "message" property
         this.template = JSString.of("""
                 <div id="app">
                   <h1>{{ message }}</h1>
@@ -27,19 +26,26 @@ public class RootComponent extends Component {
     }
 
     /**
-     * Overrides Component.data() to expose reactive state:
-     * - message: bound to the <h1> element in the template
+     * Overrides {@code Component.data()} to provide reactive state.
+     * <p>
+     * Exposes the following reactive property:
+     * <ul>
+     *   <li>{@code message} – the text displayed inside the component's main heading (h1 element)</li>
+     * </ul>
      */
     public JSObject data() {
         return new Data();
     }
 
     /**
-     * Data defines the reactive state model for this component.
-     * It is returned by the overridden data() method.
+     * Defines the reactive state for this component.
+     * Returned by the {@code data()} method.
      */
     private static class Data extends JSObject {
 
+        /**
+         * The message displayed in the template.
+         */
         public String message = "Hello World!";
     }
 }

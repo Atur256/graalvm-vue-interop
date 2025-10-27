@@ -17,7 +17,7 @@ PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 JAR_PATH="$PROJECT_DIR/target/vue-webimage-interop-1.0-SNAPSHOT.jar"
 MAIN_CLASS="io.github.atur256.vuewebimageinterop.Main"
 MX_OUTPUT="io.github.atur256.vuewebimageinterop.main.js"
-CUSTOM_OUTPUT="$PROJECT_DIR/build-output"
+CUSTOM_OUTPUT="$PROJECT_DIR/html-demo"
 
 ## === STEP 1: Build with Maven ===
 echo "Building Maven project..."

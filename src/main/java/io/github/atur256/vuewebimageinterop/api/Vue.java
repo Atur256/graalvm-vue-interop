@@ -3,13 +3,25 @@ package io.github.atur256.vuewebimageinterop.api;
 import io.github.atur256.webimageinterop.builtin.JSFunction;
 import org.graalvm.webimage.api.*;
 
+
 /**
- * Static interop access to the global Vue API.
+ * Static interop access to the global Vue API via GraalVM WebImage.
  * <p>
- * Provides bindings for core Vue functions such as {@code createApp}, {@code ref}, {@code reactive},
- * {@code computed}, lifecycle hooks, and virtual DOM rendering.
+ * Provides bindings for core Vue functions such as:
+ * <ul>
+ *   <li>{@code createApp}</li>
+ *   <li>{@code ref} and {@code reactive}</li>
+ *   <li>{@code computed}, {@code watch}, {@code watchEffect}</li>
+ *   <li>Lifecycle hooks</li>
+ *   <li>Virtual DOM rendering helpers</li>
+ * </ul>
  * <p>
  * Used with {@link Component}, {@link VueApp}, {@link VueRef}, and {@link VueReactive}.
+ *
+ * @see Component
+ * @see VueApp
+ * @see VueRef
+ * @see VueReactive
  */
 @JS.Import("Vue")
 public class Vue extends JSObject {
@@ -19,28 +31,40 @@ public class Vue extends JSObject {
 
     /**
      * Creates a Vue application from a Java-defined component.
+     *
+     * @param component a {@link Component} instance
+     * @return a {@link VueApp} representing the app
      */
     @JS.Coerce
     @JS("return Vue.createApp(component);")
     public static native VueApp createApp(Component component);
 
     /**
-     * Creates a Vue application from a raw JSObject.
+     * Creates a Vue application from a raw {@link JSObject}.
+     *
+     * @param component a {@link JSObject} defining a Vue component
+     * @return a {@link VueApp} representing the app
      */
     @JS.Coerce
     @JS("return Vue.createApp(component);")
     public static native VueApp createApp(JSObject component);
 
-
     /**
-     * Creates a raw Vue ref from a JSValue.
+     * Creates a raw Vue ref from a {@link JSValue}.
+     *
+     * @param value initial JS value
+     * @return a reactive {@link JSObject} ref
      */
     @JS.Coerce
     @JS("return Vue.ref(value);")
     public static native JSObject rawRef(JSValue value);
 
     /**
-     * Creates a typed VueRef from a Java value.
+     * Creates a typed {@link VueRef} from a Java value.
+     *
+     * @param initialValue a Java object or primitive
+     * @return a {@link VueRef} wrapping the reactive value
+     * @throws IllegalArgumentException if the type is unsupported
      */
     public static VueRef ref(Object initialValue) {
         return switch(initialValue) {
@@ -50,33 +74,45 @@ public class Vue extends JSObject {
             case String s -> VueRef.of(rawRef(JSString.of(s)));
             case JSValue j -> VueRef.of(rawRef(j));
             default -> throw new IllegalArgumentException("Unsupported type: " + initialValue.getClass());
-
         };
     }
 
     /**
-     * Wraps a JSObject in Vue's reactivity system.
+     * Wraps a {@link JSObject} in Vue's reactivity system.
+     *
+     * @param obj a JSObject
+     * @return a reactive {@link JSObject}
      */
     @JS.Coerce
     @JS("return Vue.reactive(obj);")
     public static native JSObject reactive(JSObject obj);
 
     /**
-     * Creates a computed property from a JSFunction.
+     * Creates a computed property from a {@link JSFunction}.
+     *
+     * @param fn the function returning the computed value
+     * @return a reactive {@link JSObject} representing the computed property
      */
     @JS.Coerce
     @JS("return Vue.computed(fn);")
     public static native JSObject computed(JSFunction fn);
 
     /**
-     * Creates a computed ref from a JSFunction.
+     * Creates a computed {@link VueRef} from a {@link JSFunction}.
+     *
+     * @param fn the function returning the computed value
+     * @return a {@link VueRef} wrapping the computed value
      */
     public static VueRef computedRef(JSFunction fn) {
         return VueRef.of(computed(fn));
     }
 
     /**
-     * Watches a reactive source and triggers a callback.
+     * Watches a reactive source and triggers a callback on change.
+     *
+     * @param source   reactive {@link JSObject} to watch
+     * @param callback function to execute on change
+     * @return a {@link JSFunction} representing the watcher
      */
     @JS.Coerce
     @JS("return Vue.watch(source, callback);")
@@ -84,6 +120,9 @@ public class Vue extends JSObject {
 
     /**
      * Runs a reactive effect that re-triggers on dependency change.
+     *
+     * @param callback function to execute on dependency change
+     * @return a {@link JSFunction} representing the effect
      */
     @JS.Coerce
     @JS("return Vue.watchEffect(callback);")
@@ -91,6 +130,8 @@ public class Vue extends JSObject {
 
     /**
      * Registers a callback to run when the component is mounted.
+     *
+     * @param callback a {@link JSFunction} to run after mounting
      */
     @JS.Coerce
     @JS("Vue.onMounted(callback);")
@@ -98,6 +139,8 @@ public class Vue extends JSObject {
 
     /**
      * Registers a callback to run when the component is unmounted.
+     *
+     * @param callback a {@link JSFunction} to run after unmounting
      */
     @JS.Coerce
     @JS("Vue.onUnmounted(callback);")
@@ -105,6 +148,9 @@ public class Vue extends JSObject {
 
     /**
      * Defines a component using Vue's defineComponent API.
+     *
+     * @param options a {@link JSObject} representing component options
+     * @return a {@link JSObject} representing the defined component
      */
     @JS.Coerce
     @JS("return Vue.defineComponent(options);")
@@ -112,6 +158,9 @@ public class Vue extends JSObject {
 
     /**
      * Creates a virtual DOM node with tag only.
+     *
+     * @param tag the HTML tag name
+     * @return a {@link JSObject} representing the VNode
      */
     @JS.Coerce
     @JS("return Vue.h(tag);")
@@ -119,6 +168,10 @@ public class Vue extends JSObject {
 
     /**
      * Creates a virtual DOM node with tag and props.
+     *
+     * @param tag   the HTML tag name
+     * @param props a {@link JSObject} of attributes/props
+     * @return a {@link JSObject} representing the VNode
      */
     @JS.Coerce
     @JS("return Vue.h(tag, props);")
@@ -126,6 +179,11 @@ public class Vue extends JSObject {
 
     /**
      * Creates a virtual DOM node with tag, props, and children.
+     *
+     * @param tag      the HTML tag name
+     * @param props    a {@link JSObject} of attributes/props
+     * @param children a {@link JSValue} or array of child nodes
+     * @return a {@link JSObject} representing the VNode
      */
     @JS.Coerce
     @JS("return Vue.h(tag, props, children);")
@@ -133,6 +191,8 @@ public class Vue extends JSObject {
 
     /**
      * Defers execution until the next DOM update cycle.
+     *
+     * @param callback a {@link JSFunction} to run on the next tick
      */
     @JS.Coerce
     @JS("return Vue.nextTick(callback);")

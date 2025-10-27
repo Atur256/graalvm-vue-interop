@@ -14,60 +14,48 @@ import org.graalvm.webimage.api.JSValue;
  * Demonstrates:
  * <ul>
  *   <li>Reactive state via {@code Vue.reactive}</li>
- *   <li>Manual virtual DOM generation via {@code Vue.h}</li>
+ *   <li>Manual virtual DOM rendering via {@code Vue.h}</li>
  *   <li>Event-driven updates via {@code @click}</li>
- *   <li>Deferred lifecycle timing via {@code Vue.nextTick}</li>
+ *   <li>Deferred DOM updates using {@code Vue.nextTick}</li>
  * </ul>
  */
 public class RenderTickComponent extends Component {
 
     /**
-     * Public render function used by Vue to manually generate the virtual DOM.
-     * Must be assigned to enable custom rendering via {@code Vue.h}.
+     * Public render function for manual virtual DOM generation.
      */
     public JSObject render;
 
     /**
-     * Reactive state object tracked by Vue.
+     * Reactive state tracked by Vue.
      */
     public JSObject reactiveState;
 
     /**
-     * Render function that returns a virtual DOM tree.
+     * Constructor initializes reactive state and render function.
      */
-    public JSObject renderVNode;
-
     public RenderTickComponent() {
-
-        // Initial placeholder template (not used once render function is active)
         this.template = JSString.of("<div id='placeholder'></div>");
 
-        // Create initial state object with default message and style
+        // Initialize reactive state
         InitialState initialState = new InitialState();
-
-        // Make the state reactive so Vue tracks changes
         this.reactiveState = Vue.reactive(initialState);
 
         // Provide reactive state to Vue's data system
         this.data = JSFunction.fromSupplier(() -> reactiveState);
 
-        // Define a render function using Vue.h to manually construct the virtual DOM
-        this.renderVNode = JSFunction.fromSupplier(() -> Vue.h(
-                "div",                             // Root <div> element
-                new Props(initialState),                // Style props for root
-                Vue.h("span",                      // Child <span> element
-                        new SpanProps(reactiveState),   // Click handler
+        // Define render function using Vue.h
+        this.render = JSFunction.fromSupplier(() -> Vue.h(
+                "div",
+                new Props(initialState),
+                Vue.h("span", new SpanProps(reactiveState),
                         JSValue.checkedCoerce(reactiveState.get("message"), JSString.class)
                 )
         ));
-
-        // Assign the render function to Vue's runtime renderer
-        render = renderVNode;
     }
 
     /**
      * Initial reactive state model.
-     * Contains message and style fields used in rendering.
      */
     private static class InitialState extends JSObject {
 
@@ -76,21 +64,19 @@ public class RenderTickComponent extends Component {
     }
 
     /**
-     * Props defines style bindings for the root element.
+     * Props for root div element.
      */
     private static class Props extends JSObject {
 
         public JSString style;
 
-        public Props(InitialState initialState) {
-            this.style = initialState.style;
+        public Props(InitialState state) {
+            this.style = state.style;
         }
     }
 
-
     /**
-     * SpanProps defines event handlers and bindings for the <span> element.
-     * Includes logic to update state immediately and again after nextTick.
+     * SpanProps defines event handlers for the span element.
      */
     private static class SpanProps extends JSObject {
 
@@ -98,15 +84,12 @@ public class RenderTickComponent extends Component {
 
         public SpanProps(JSObject state) {
             this.onClick = JSFunction.fromRunnable(() -> {
-                System.out.println("Span clicked: updating message and style");
-
-                // First update: immediate
+                // Immediate update
                 state.set("message", JSString.of("Updated on click!"));
                 state.set("style", JSString.of("color: green; font-weight: bold; font-size: 24px;"));
 
-                // Second update: scheduled after DOM update
+                // Deferred update after next tick
                 Vue.nextTick(JSFunction.fromRunnable(() -> {
-                    System.out.println("Next tick: updating message again");
                     state.set("message", JSString.of("Final update after next tick!"));
                 }));
             });

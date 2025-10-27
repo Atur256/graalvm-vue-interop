@@ -10,13 +10,13 @@ import io.github.atur256.vuewebimageinterop.api.Vue;
  * <p>
  * Demonstrates:
  * <ul>
- *   <li>Basic template binding via {@code {{ message }}}</li>
- *   <li>Reactive state via {@code data()}</li>
- *   <li>Minimal component definition in Java</li>
+ *   <li>Basic template binding with {@code {{ message }}}</li>
+ *   <li>Reactive state via the {@code data()} method</li>
+ *   <li>Minimal Vue component definition in Java</li>
  * </ul>
+ *
  * Mirrors the official Vue Hello World example:
  * <a href="https://vuejs.org/examples/#hello-world">vuejs.org/examples/#hello-world</a>
- * <p>
  */
 public class HelloWorldExample {
 

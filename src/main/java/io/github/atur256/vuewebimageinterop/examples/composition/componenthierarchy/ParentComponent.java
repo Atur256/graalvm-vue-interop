@@ -9,65 +9,58 @@ import org.graalvm.webimage.api.*;
 
 
 /**
- * ParentComponent is the root Vue component for this GraalVM-based hierarchy example.
+ * ParentComponent is the root Vue component for this GraalVM-based component hierarchy example.
  * <p>
  * Demonstrates:
  * <ul>
  *   <li>Reactive state via {@code Vue.ref}</li>
  *   <li>Computed property: doubled count</li>
- *   <li>Prop passing to child</li>
- *   <li>Provide/inject for shared state</li>
+ *   <li>Prop passing from parent → child → grandchild</li>
+ *   <li>Provide/inject pattern for shared state</li>
+ *   <li>Event emission from grandchild back to parent</li>
  * </ul>
  */
 public class ParentComponent extends Component {
 
-    // Shared reactive count used across component hierarchy
     private static final VueRef sharedCountRef = Vue.ref(0);
 
     public ParentComponent() {
-
-        // Vue template: displays count, computed value, and renders child component with props
+        // Vue template: displays count, doubled value, child component
         this.template = JSString.of("""
-                <div class="app">
-                 <h1>Shared State & Hierarchy Example</h1>
-                 <p>Message from Grandchild Component: {{ grandMessage }}</p>
-                 <p>Count: {{ count }}</p>
-                 <p>Doubled: {{ doubledCount }}</p>
-                 <button @click="increment">Increment</button>
+                    <div class="app">
+                        <h1>Shared State & Hierarchy Example</h1>
+                        <p>Message from Grandchild Component: {{ grandMessage }}</p>
+                        <p>Count: {{ count }}</p>
+                        <p>Doubled: {{ doubledCount }}</p>
+                        <button @click="increment">Increment</button>
                 
-                 <messageReceiver
-                    :parentMessage="message"
-                    :parentCount="count"
-                    />
-                </div>
+                        <messageReceiver
+                            :parentMessage="message"
+                            :parentCount="count"
+                        />
+                    </div>
                 """);
 
-        // Vue method bindings: increment logic
+        // Vue methods
         this.methods = new Methods();
 
-        // Register child component <messageReceiver>
+        // Register child components
         this.components = new Components();
 
-        // Define computed property: doubledCount
+        // Computed properties
         this.computed = new Computed();
 
-        // Provide values to descendants via inject
+        // Provide values for descendants
         this.provide = new Provide();
     }
 
     /**
-     * Overrides Component.data() to expose reactive state:
-     * - count: shared ref value
-     * - message: static greeting
-     * - grandMessage: updated by grandchild via event
+     * Reactive state exposed to template.
      */
     public JSObject data() {
         return new Data();
     }
 
-    /**
-     * Data defines the reactive state model for this component.
-     */
     private static class Data extends JSObject {
 
         public JSObject count = sharedCountRef.getRef();
@@ -76,8 +69,7 @@ public class ParentComponent extends Component {
     }
 
     /**
-     * Methods defines Vue event handlers.
-     * These are bound to template actions via @click.
+     * Vue methods bound to template actions.
      */
     private static class Methods extends JSObject {
 
@@ -90,7 +82,7 @@ public class ParentComponent extends Component {
     }
 
     /**
-     * Components registers child components used in the template.
+     * Child components used in template.
      */
     private static class Components extends JSObject {
 
@@ -98,7 +90,7 @@ public class ParentComponent extends Component {
     }
 
     /**
-     * Components registers child components used in the template.
+     * Computed properties.
      */
     private static class Computed extends JSObject {
 
@@ -109,7 +101,7 @@ public class ParentComponent extends Component {
     }
 
     /**
-     * Provide defines values made available to descendant components via inject.
+     * Values provided to descendant components via inject.
      */
     private static class Provide extends JSObject {
 

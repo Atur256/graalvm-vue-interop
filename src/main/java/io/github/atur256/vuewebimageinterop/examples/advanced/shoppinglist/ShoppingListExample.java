@@ -10,7 +10,7 @@ import io.github.atur256.vuewebimageinterop.api.Vue;
  * Demonstrates:
  * <ul>
  *   <li>Reactive list management via {@code JSArray}</li>
- *   <li>Dynamic component rendering via {@code v-for}</li>
+ *   <li>Dynamic component rendering using {@code v-for}</li>
  *   <li>Event-driven item removal via {@code @remove}</li>
  * </ul>
  */
@@ -21,7 +21,7 @@ public class ShoppingListExample {
         // Instantiate the root Vue component
         Component component = new RootComponent();
 
-        // Create and mount the Vue application.
+        // Create and mount the Vue application
         Vue.createApp(component).mount();
     }
 }

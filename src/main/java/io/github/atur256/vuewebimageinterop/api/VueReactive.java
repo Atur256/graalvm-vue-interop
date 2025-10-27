@@ -16,7 +16,10 @@ import javax.annotation.Nonnull;
 public record VueReactive(JSObject jsReactive) {
 
     /**
-     * Creates a reactive object from a plain JSObject.
+     * Wraps a plain JSObject into a reactive Vue object.
+     *
+     * @param obj the JSObject to make reactive
+     * @return a new {@link VueReactive} wrapping the reactive object
      */
     public static VueReactive of(JSObject obj) {
         JSObject reactiveObj = Vue.reactive(obj);
@@ -25,21 +28,35 @@ public record VueReactive(JSObject jsReactive) {
 
     /**
      * Returns the underlying reactive JSObject.
+     *
+     * @return the wrapped {@link JSObject}
      */
     public JSObject getReactive() {
         return jsReactive;
     }
 
     /**
-     * Retrieves a reactive field and coerces it to a Java type.
+     * Retrieves a reactive field by key and coerces it to a Java type.
+     *
+     * @param key the field name
+     * @param cls the target Java type
+     * @param <T> the type parameter
+     * @return the field value coerced to {@code cls}
      */
     public <T> T get(String key, Class<T> cls) {
         return JSValue.checkedCoerce(jsReactive.get(key), cls);
     }
 
-
     /**
      * Sets a reactive field to a new value.
+     * <p>
+     * Supported value types: {@link Integer}, {@link Double}, {@link Boolean}, {@link String},
+     * {@link JSObject}, {@link JSValue}.
+     *
+     * @param key   the field name
+     * @param value the new value
+     * @return this {@link VueReactive} instance for chaining
+     * @throws IllegalArgumentException if the value type is unsupported
      */
     public VueReactive set(String key, Object value) {
         switch(value) {

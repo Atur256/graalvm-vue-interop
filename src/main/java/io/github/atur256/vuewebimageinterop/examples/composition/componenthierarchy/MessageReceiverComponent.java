@@ -21,18 +21,17 @@ import org.graalvm.webimage.api.JSString;
 public class MessageReceiverComponent extends Component {
 
     public MessageReceiverComponent() {
-
         // Vue template: displays props and renders grandchild component
         this.template = JSString.of("""
                 <div class="child">
                     <h2>Child Component: Prop Receiver</h2>
-                    <p>Received Message via props: {{ parentMessage }} ({{ parentCount }}) </p>
+                    <p>Received Message via props: {{ parentMessage }} ({{ parentCount }})</p>
                     <button @click="decrement">Decrement</button>
                     <injectedMessageComponent @childEvent="updateParentMessage"/>
-                  </div>
+                </div>
                 """);
 
-        // Vue method bindings: decrement and updateParentMessage logic
+        // Vue method bindings
         this.methods = new Methods();
 
         // Register grandchild component
@@ -43,17 +42,22 @@ public class MessageReceiverComponent extends Component {
     }
 
     /**
-     * Methods defines Vue event handlers.
-     * Includes logic to emit events and update shared state.
+     * Vue method bindings for decrement and parent message update.
      */
     private static class Methods extends JSObject {
 
+        /**
+         * Updates the grandMessage value in parent component
+         */
         public JSFunction updateParentMessage = JSFunction.fromConsumer((JSString messageVal) -> {
             String msg = messageVal.asString();
             VueApp.setValue("grandMessage", msg);
             System.out.println("Passed message: " + msg);
         });
 
+        /**
+         * Decrements the shared count value
+         */
         public JSFunction decrement = JSFunction.fromRunnable(() -> {
             int current = VueApp.getValue("count", Integer.class);
             int decremented = current - 1;
@@ -62,7 +66,7 @@ public class MessageReceiverComponent extends Component {
     }
 
     /**
-     * Components registers child components used in the template.
+     * Registers grandchild component.
      */
     private static class Components extends JSObject {
 
@@ -70,7 +74,7 @@ public class MessageReceiverComponent extends Component {
     }
 
     /**
-     * Props defines the input data passed from the parent component.
+     * Props received from parent component.
      */
     public static class Props extends JSObject {
 

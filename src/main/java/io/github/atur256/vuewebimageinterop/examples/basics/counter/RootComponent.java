@@ -11,39 +11,43 @@ import org.graalvm.webimage.api.JSString;
 /**
  * RootComponent is the root Vue component for this GraalVM-based counter example.
  * <p>
- * It overrides key fields from the abstract {@code Component} class: {@code template}, {@code data}, and {@code methods}.
+ * Demonstrates:
+ * <ul>
+ *   <li>Reactive state via {@code data()}</li>
+ *   <li>Event handling via {@code methods}</li>
+ * </ul>
  */
 public class RootComponent extends Component {
 
     public RootComponent() {
-
-        // Vue template: displays count and status, with increment/decrement buttons
+        // Vue template: displays count, status, and increment/decrement buttons
         this.template = JSString.of("""
-                <div class="app">
-                 <h1>Counter App</h1>
-                 <p>Count: {{ count }}</p>
-                 <p>Status: {{ status }}</p>
-                 <button @click="increment">Increment</button>
-                 <button @click="decrement">Decrement</button>
-                </div>
+                    <div class="app">
+                        <h1>Counter App</h1>
+                        <p>Count: {{ count }}</p>
+                        <p>Status: {{ status }}</p>
+                        <button @click="increment">Increment</button>
+                        <button @click="decrement">Decrement</button>
+                    </div>
                 """);
 
-        // Vue method bindings: increment/decrement handlers
+        // Bind Vue methods
         this.methods = new Methods();
     }
 
     /**
-     * Overrides Component.data() to expose reactive state:
-     * - count: numeric counter
-     * - status: label based on count threshold
+     * Provides reactive state for this component:
+     * <ul>
+     *   <li>{@code count} – numeric counter</li>
+     *   <li>{@code status} – label based on current count</li>
+     * </ul>
      */
     public JSObject data() {
         return new Data();
     }
 
     /**
-     * Data defines the reactive state model for this component.
-     * It is returned by the overridden {@code data()} method.
+     * Reactive state model for the counter component.
      */
     private static class Data extends JSObject {
 
@@ -52,12 +56,10 @@ public class RootComponent extends Component {
     }
 
     /**
-     * Methods defines Vue event handlers.
-     * These are bound to template actions via {@code @click}.
+     * Vue methods for incrementing/decrementing the counter.
      */
     private static class Methods extends JSObject {
 
-        // Increments the counter and updates status
         public JSFunction increment = JSFunction.fromRunnable(() -> {
             int current = VueApp.getValue("count", Integer.class);
             int incremented = current + 1;
@@ -65,7 +67,6 @@ public class RootComponent extends Component {
             updateStatus(incremented);
         });
 
-        // Decrements the counter and updates status
         public JSFunction decrement = JSFunction.fromRunnable(() -> {
             int current = VueApp.getValue("count", Integer.class);
             int decremented = current - 1;
@@ -73,9 +74,10 @@ public class RootComponent extends Component {
             updateStatus(decremented);
         });
 
-        // Updates the status label based on the current count
+        /**
+         * Updates the status label based on current count.
+         */
         private static void updateStatus(int value) {
-
             VueApp.setValue("status", value > 4 ? "High" : (value < 0 ? "Minus" : "Low"));
         }
     }

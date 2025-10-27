@@ -13,6 +13,9 @@ import io.github.atur256.vuewebimageinterop.api.Vue;
  *   <li>Computed geometry for dynamic layout</li>
  *   <li>Component hierarchy with prop passing</li>
  * </ul>
+ *
+ * Mirrors the official Vue SVG Graph example:
+ * <a href="https://vuejs.org/examples/#svg">vuejs.org/examples/#svg</a>
  */
 public class SVGGraphExample {
 

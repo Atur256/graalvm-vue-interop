@@ -25,13 +25,13 @@ public class LifecycleHooksExample {
         // Create the Vue application
         VueApp app = Vue.createApp(component);
 
-        // Pass the app instance into the component so it can unmount itself
+        // Pass the app instance into the component for self-unmounting
         component.setApp(app);
 
         // Mount the Vue application
         app.mount();
 
-        // Optional: register a JS-side unmount hook
+        // Register a JS-side unmount hook
         app.onUnmountJS(JSFunction.fromRunnable(() -> System.out.println("Vue Application unmounted!")));
     }
 }

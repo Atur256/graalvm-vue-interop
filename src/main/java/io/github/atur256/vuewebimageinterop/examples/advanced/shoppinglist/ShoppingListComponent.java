@@ -1,6 +1,7 @@
 package io.github.atur256.vuewebimageinterop.examples.advanced.shoppinglist;
 
 import io.github.atur256.vuewebimageinterop.api.Component;
+import io.github.atur256.webimageinterop.builtin.JSFunction;
 import org.graalvm.webimage.api.JSNumber;
 import org.graalvm.webimage.api.JSObject;
 import org.graalvm.webimage.api.JSString;
@@ -24,12 +25,24 @@ public class ShoppingListComponent extends Component {
         this.template = JSString.of("""
                 <li>
                     {{ index + 1 }}. {{ item.text }}
-                    <span style="cursor:pointer; margin-left:10px;" @click="$emit('remove', item.id)">&#128465;&#65039;</span>
+                    <span style="cursor:pointer; margin-left:10px;" @click=emitMessage(item)>&#128465;&#65039;</span>
                 </li>
                 """);
 
+        // Bind Vue methods
+        this.methods = new Methods();
+
         // Declare props received from parent
         this.props = new Props();
+    }
+
+
+    /**
+     * Vue method binding for emitMessage
+     */
+    public static class Methods extends JSObject {
+        // Note: must be written entirely in JS due to GraalVM limitations — `this` cannot be accessed from Java lambdas.
+        public JSFunction emitMessage = JSFunction.fromArgs("item","this.$emit('remove', item.id);");
     }
 
     /**
