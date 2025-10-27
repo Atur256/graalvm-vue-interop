@@ -36,7 +36,7 @@ mx web-image -Ob -H:-ClosureCompiler -cp "$JAR_PATH" "$MAIN_CLASS"
 # === STEP 4: Move output to build-output ===
 echo "Copying output to $CUSTOM_OUTPUT..."
 mkdir -p "$CUSTOM_OUTPUT"
-mv "$MX_OUTPUT" "$CUSTOM_OUTPUT"/
+mv "$MX_OUTPUT" "$CUSTOM_OUTPUT/app.js"
 
 echo "Build complete. Output is ready in: $CUSTOM_OUTPUT"
 

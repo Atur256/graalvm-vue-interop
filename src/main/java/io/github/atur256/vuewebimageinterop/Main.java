@@ -1,21 +1,8 @@
 package io.github.atur256.vuewebimageinterop;
 
 
-import io.github.atur256.vuewebimageinterop.examples.advanced.shoppinglist.ShoppingListExample;
 import io.github.atur256.vuewebimageinterop.examples.advanced.svggraph.SVGGraphExample;
-import io.github.atur256.vuewebimageinterop.examples.basics.counter.CounterExample;
-import io.github.atur256.vuewebimageinterop.examples.basics.helloworld.HelloWorldExample;
-import io.github.atur256.vuewebimageinterop.examples.composition.componenthierarchy.ComponentHierarchyExample;
-import io.github.atur256.vuewebimageinterop.examples.composition.componenthierarchy.InjectedMessageComponent;
-import io.github.atur256.vuewebimageinterop.examples.composition.componenthierarchy.MessageReceiverComponent;
-import io.github.atur256.vuewebimageinterop.examples.composition.componenthierarchy.ParentComponent;
 import io.github.atur256.vuewebimageinterop.api.VueApp;
-import io.github.atur256.vuewebimageinterop.api.VueRef;
-import io.github.atur256.vuewebimageinterop.examples.basics.counter.RootComponent;
-import io.github.atur256.vuewebimageinterop.examples.composition.globalcomponentplugin.GlobalComponentPluginExample;
-import io.github.atur256.vuewebimageinterop.examples.reactivity.lifecycle.LifecycleHooksExample;
-import io.github.atur256.vuewebimageinterop.examples.reactivity.rendernexttick.RenderNextTickExample;
-import io.github.atur256.vuewebimageinterop.examples.reactivity.watcheffects.ReactiveWatchExample;
 
 
 public class Main {
