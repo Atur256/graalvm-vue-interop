@@ -5,7 +5,8 @@ using [GraalVM](https://www.graalvm.org/) and
 the [WebImage Interop Extension](https://github.com/Atur256/web-image-interop).
 
 GraalVM is used to **translate Java-defined Vue components into JavaScript** via its WebImage runtime (`mx` build tool).
-The resulting JS file (`app.js`) can then be loaded in the provided HTML file [`Demo.html`](https://github.com/Atur256/vue-webimage-interop/blob/master/html-demo/Demo.html) for browser execution.
+The resulting JS file (`app.js`) can then be loaded in the provided HTML file [
+`Demo.html`](https://github.com/Atur256/vue-webimage-interop/blob/master/html-demo/Demo.html) for browser execution.
 
 This repository is part of a **bachelor thesis** exploring Java-JavaScript interop and GraalVM-managed runtimes.
 
@@ -14,7 +15,11 @@ This repository is part of a **bachelor thesis** exploring Java-JavaScript inter
 ## Features
 
 - **Java-first Vue components:** Define templates, reactive state, computed properties, and methods in Java.
-- **Reactive APIs:** Composition API-style [`VueRef`](https://github.com/Atur256/-vue-webimage-interop/blob/master/src/main/java/io/github/atur256/vuewebimageinterop/api/VueRef.java) and [`VueReactive`](https://github.com/Atur256/-vue-webimage-interop/blob/master/src/main/java/io/github/atur256/vuewebimageinterop/api/VueReactive.java) objects for reactive state.
+- **Reactive APIs:** Composition API-style [
+  `VueRef`](https://github.com/Atur256/-vue-webimage-interop/blob/master/src/main/java/io/github/atur256/vuewebimageinterop/api/VueRef.java)
+  and [
+  `VueReactive`](https://github.com/Atur256/-vue-webimage-interop/blob/master/src/main/java/io/github/atur256/vuewebimageinterop/api/VueReactive.java)
+  objects for reactive state.
 - **Component hierarchies:** Nested components, props, and dependency injection are supported.
 - **Generates browser-ready JS:** Produces `app.js` that can be loaded in any HTML page.
 - **Examples included:** Counter, HelloWorld, lifecycle hooks, shopping lists, SVG graphs, and more.
@@ -53,6 +58,53 @@ src/
   ├─ VueDemo.html # Example HTML to run the demo
   └─ styles.css # Styles for the demo
 ```
+
+---
+
+## Core APIs
+
+### [`Component`](https://github.com/Atur256/-vue-webimage-interop/blob/master/src/main/java/io/github/atur256/vuewebimageinterop/api/Component.java)
+
+Abstract base class for Vue components:
+
+- `template` — Vue template as `JSString`
+- `data()` — reactive state
+- `methods`, `computed`, `props`, `components`, `inject`, `provide` — Vue options accessible from Java
+
+---
+
+### [`Vue`](https://github.com/Atur256/-vue-webimage-interop/blob/master/src/main/java/io/github/atur256/vuewebimageinterop/api/Vue.java)
+
+Static access to Vue API:
+
+- `createApp(Component|JSObject)` — returns a `VueApp`
+- `ref(Object)` / `reactive(JSObject)` — create reactive refs or objects
+- `computed(JSFunction)`, `watch`, `watchEffect` — reactive helpers
+- Lifecycle hooks: `onMounted`, `onUnmounted`
+- Virtual DOM helpers: `h(tag, props, children)`
+- `defineComponent(JSObject options)` — define a component
+
+---
+
+### [`VueApp`](https://github.com/Atur256/-vue-webimage-interop/blob/master/src/main/java/io/github/atur256/vuewebimageinterop/api/VueApp.java)
+
+Represents a Vue application instance:
+
+- Stores the component hierarchy
+- `mount()` — prepares JS output
+- `component(name, JSObject)` — register global components
+- `use(JSObject)` — install plugins
+- `getValue(String)` / `setValue(String, Object)` — access reactive state
+
+---
+
+### [`VueReactive`](https://github.com/Atur256/-vue-webimage-interop/blob/master/src/main/java/io/github/atur256/vuewebimageinterop/api/VueReactive.java) & [`VueRef`](https://github.com/Atur256/-vue-webimage-interop/blob/master/src/main/java/io/github/atur256/vuewebimageinterop/api/VueRef.java)
+
+Composition API-style reactive objects:
+
+- `VueReactive` — wraps reactive `JSObject`s
+- `VueRef` — wraps reactive values
+- Typed getters and setters for reactive state
 
 ---
 
@@ -104,7 +156,8 @@ mx web-image -Ob -H:-ClosureCompiler \
 
 ### 4. Use the Generated JS in Browser
 
-After running the `mx` build, the resulting JavaScript file will appear in the **directory where you ran the command**.  
+After running the `mx` build, the resulting JavaScript file will appear in the **directory where you ran the command
+**.  
 The filename is determined by your `MainClassName` and may differ from `app.js`.
 
 The `html-demo` folder contains a pre-made demo HTML file (`Demo.html`) that you can use to test the generated JS.  
@@ -112,72 +165,46 @@ Include the generated JS file in `Demo.html` using a `<script>` tag if it’s no
 
 ---
 
-## Core APIs
-
-### [`Component`](https://github.com/Atur256/-vue-webimage-interop/blob/master/src/main/java/io/github/atur256/vuewebimageinterop/api/Component.java)
-
-Abstract base class for Vue components:
-
-- `template` — Vue template as `JSString`
-- `data()` — reactive state
-- `methods`, `computed`, `props`, `components`, `inject`, `provide` — Vue options accessible from Java
-
----
-
-### [`Vue`](https://github.com/Atur256/-vue-webimage-interop/blob/master/src/main/java/io/github/atur256/vuewebimageinterop/api/Vue.java)
-
-Static access to Vue API:
-
-- `createApp(Component|JSObject)` — returns a `VueApp`
-- `ref(Object)` / `reactive(JSObject)` — create reactive refs or objects
-- `computed(JSFunction)`, `watch`, `watchEffect` — reactive helpers
-- Lifecycle hooks: `onMounted`, `onUnmounted`
-- Virtual DOM helpers: `h(tag, props, children)`
-- `defineComponent(JSObject options)` — define a component
-
----
-
-### [`VueApp`](https://github.com/Atur256/-vue-webimage-interop/blob/master/src/main/java/io/github/atur256/vuewebimageinterop/api/VueApp.java)
-
-Represents a Vue application instance:
-
-- Stores the component hierarchy
-- `mount()` — prepares JS output
-- `component(name, JSObject)` — register global components
-- `use(JSObject)` — install plugins
-- `getValue(String)` / `setValue(String, Object)` — access reactive state
-
----
-
-### [`VueReactive`](https://github.com/Atur256/-vue-webimage-interop/blob/master/src/main/java/io/github/atur256/vuewebimageinterop/api/VueReactive.java) & [`VueRef`](https://github.com/Atur256/-vue-webimage-interop/blob/master/src/main/java/io/github/atur256/vuewebimageinterop/api/VueRef.java)
-
-Composition API-style reactive objects:
-
-- `VueReactive` — wraps reactive `JSObject`s
-- `VueRef` — wraps reactive values
-- Typed getters and setters for reactive state
-
----
-
 ## Examples & Testing
 
-The [`examples/`](https://github.com/Atur256/-vue-webimage-interop/blob/master/src/main/java/io/github/atur256/vuewebimageinterop/examples/) folder contains demos showcasing:
+The [
+`examples/`](https://github.com/Atur256/-vue-webimage-interop/blob/master/src/main/java/io/github/atur256/vuewebimageinterop/examples/)
+folder contains demos showcasing:
 
 - **Basic apps:** counters, HelloWorld, and simple composition examples
 - **Component hierarchies:** nested components and global plugins
 - **Reactivity & lifecycle:** lifecycle hooks, watch effects, and reactive state updates
 - **Advanced apps:** shopping lists and SVG graphs
 
-The [`Main.java`](https://github.com/Atur256/-vue-webimage-interop/blob/master/src/main/java/io/github/atur256/vuewebimageinterop/Main.java) class serves as a **launcher**: it calls example components (e.g., [`HelloWorldExample`](https://github.com/Atur256/-vue-webimage-interop/blob/master/src/main/java/io/github/atur256/vuewebimageinterop/examples/basics/helloworld)) to generate their JavaScript output for the browser.  
+The [
+`Main.java`](https://github.com/Atur256/-vue-webimage-interop/blob/master/src/main/java/io/github/atur256/vuewebimageinterop/Main.java)
+class serves as a **launcher**: it calls example components (e.g., [
+`HelloWorldExample`](https://github.com/Atur256/-vue-webimage-interop/blob/master/src/main/java/io/github/atur256/vuewebimageinterop/examples/basics/helloworld))
+to generate their JavaScript output for the browser.  
 This ensures that Vue components are compiled and included in the generated JS.
+
+---
+
+## Limitations
+
+This project has some important limitations to be aware of:
+
+1. **Components or JS objects without a direct 1:1 JavaScript mapping**
+    - Such Vue components **or JavaScript objects** must be **instantiated at least once in Java**.
+    - Otherwise, the GraalVM compiler may **strip them out as unused code** during the WebImage build.
+
+2. **JavaScript `this` usage in functions**
+    - Any JS code that uses `this` **cannot be written in Java lambdas**.
+    - These functions must be **fully written in JavaScript** because GraalVM does not allow access to `this` from Java
+      code.
 
 ---
 
 ## Future Development
 
-This project is part of a bachelor thesis and may not receive further updates or active development.
+This project was developed as part of a bachelor thesis and **may not see further updates or active development**.
 
-While contributions are welcome, there is **no guarantee of ongoing maintenance** or future feature additions.
+While contributions are welcome, there is **no guarantee of ongoing maintenance or new feature additions**.
 
 ---
 
@@ -185,4 +212,4 @@ While contributions are welcome, there is **no guarantee of ongoing maintenance*
 
 This project’s license is currently undecided.
 
-Please replace this section with the appropriate license when it is chosen.
+This section will be replaced with appropriate license when it is chosen.
