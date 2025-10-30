@@ -3,6 +3,9 @@ package io.github.atur256.vuewebimageinterop.api;
 import io.github.atur256.webimageinterop.builtin.JSFunction;
 import org.graalvm.webimage.api.*;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 
 /**
  * Static interop access to the global Vue API via GraalVM WebImage.
@@ -63,16 +66,16 @@ public class Vue extends JSObject {
      * Creates a typed {@link VueRef} from a Java value.
      *
      * @param initialValue a Java object or primitive
-     * @return a {@link VueRef} wrapping the reactive value
+     * @return a {@link JSObject} wrapping the reactive value
      * @throws IllegalArgumentException if the type is unsupported
      */
-    public static VueRef ref(Object initialValue) {
+    public static JSObject ref(Object initialValue) {
         return switch(initialValue) {
-            case Integer i -> VueRef.of(rawRef(JSNumber.of(i)));
-            case Double d -> VueRef.of(rawRef(JSNumber.of(d)));
-            case Boolean b -> VueRef.of(rawRef(JSBoolean.of(b)));
-            case String s -> VueRef.of(rawRef(JSString.of(s)));
-            case JSValue j -> VueRef.of(rawRef(j));
+            case Integer i -> rawRef(JSNumber.of(i));
+            case Double d -> rawRef(JSNumber.of(d));
+            case Boolean b -> rawRef(JSBoolean.of(b));
+            case String s -> rawRef(JSString.of(s));
+            case JSValue j -> rawRef(j);
             default -> throw new IllegalArgumentException("Unsupported type: " + initialValue.getClass());
         };
     }
@@ -106,27 +109,6 @@ public class Vue extends JSObject {
     public static VueRef computedRef(JSFunction fn) {
         return VueRef.of(computed(fn));
     }
-
-    /**
-     * Watches a reactive source and triggers a callback on change.
-     *
-     * @param source   reactive {@link JSObject} to watch
-     * @param callback function to execute on change
-     * @return a {@link JSFunction} representing the watcher
-     */
-    @JS.Coerce
-    @JS("return Vue.watch(source, callback);")
-    public static native JSFunction watch(JSObject source, JSFunction callback);
-
-    /**
-     * Runs a reactive effect that re-triggers on dependency change.
-     *
-     * @param callback function to execute on dependency change
-     * @return a {@link JSFunction} representing the effect
-     */
-    @JS.Coerce
-    @JS("return Vue.watchEffect(callback);")
-    public static native JSFunction watchEffect(JSFunction callback);
 
     /**
      * Registers a callback to run when the component is mounted.
@@ -197,4 +179,9 @@ public class Vue extends JSObject {
     @JS.Coerce
     @JS("return Vue.nextTick(callback);")
     public static native void nextTick(JSFunction callback);
+
+//    @JS.Coerce
+//    @JS(value = "this.$emit(func, id)")
+//    public static native void emit(String func, int id);
+
 }

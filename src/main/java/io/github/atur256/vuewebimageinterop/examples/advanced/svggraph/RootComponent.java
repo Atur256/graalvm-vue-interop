@@ -7,6 +7,7 @@ import io.github.atur256.webimageinterop.builtin.JSFunction;
 import org.graalvm.webimage.api.JSNumber;
 import org.graalvm.webimage.api.JSObject;
 import org.graalvm.webimage.api.JSString;
+import org.graalvm.webimage.api.JSValue;
 
 
 /**
@@ -74,19 +75,19 @@ public class RootComponent extends Component {
      */
     private static class Methods extends JSObject {
 
-        public JSFunction add = JSFunction.fromJavaConsumer((JSObject e) -> {
+        public JSFunction add = JSFunction.fromJSConsWithThis((JSObject data, JSObject e) -> {
             JSFunction.fromArgs("obj", "obj.preventDefault();").call(e);
 
-            String newLabel = VueApp.getValue("newLabel", String.class);
+            String newLabel = JSValue.checkedCoerce(data.get("newLabel"), String.class);
             if(newLabel.isEmpty()) return;
 
-            JSArray stats = VueApp.getValue("stats", JSArray.class);
+            JSArray stats = JSValue.checkedCoerce(data.get("stats"), JSArray.class);
             stats.push(createItem(newLabel));
-            VueApp.setValue("newLabel", "");
+            data.set("newLabel", "Test");
         });
 
-        public JSFunction remove = JSFunction.fromJavaConsumer((JSObject stat) -> {
-            JSArray stats = VueApp.getValue("stats", JSArray.class);
+        public JSFunction remove = JSFunction.fromJSConsWithThis((JSObject data, JSObject stat) -> {
+            JSArray stats = JSValue.checkedCoerce(data.get("stats"), JSArray.class);
             if(stats.length > 3) stats.splice(stats.indexOf(stat), 1);
             else System.err.println("Can't delete more!");
         });

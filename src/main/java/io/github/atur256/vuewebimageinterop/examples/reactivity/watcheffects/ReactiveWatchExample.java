@@ -2,6 +2,8 @@ package io.github.atur256.vuewebimageinterop.examples.reactivity.watcheffects;
 
 import io.github.atur256.vuewebimageinterop.api.Component;
 import io.github.atur256.vuewebimageinterop.api.Vue;
+import org.graalvm.webimage.api.JSNumber;
+import org.graalvm.webimage.api.JSObject;
 
 
 /**

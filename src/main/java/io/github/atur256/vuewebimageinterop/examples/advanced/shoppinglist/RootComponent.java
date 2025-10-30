@@ -28,7 +28,7 @@ public class RootComponent extends Component {
                 <div class="app">
                     <h1>Grocery List</h1>
                     <input v-model="newItemText">
-                    <button @click="addItem()">Add Item</button>
+                    <button @click="addItem">Add Item</button>
                     <list-item
                       v-for="(item, index) in shoppingList"
                       :item="item"
@@ -73,22 +73,24 @@ public class RootComponent extends Component {
      */
     private static class Methods extends JSObject {
 
-        public JSFunction addItem = JSFunction.fromRunnable(() -> {
-            String itemText = VueApp.getValue("newItemText", String.class);
+        public JSFunction addItem = JSFunction.fromThisJSCons((JSObject data) -> {
+
+            String itemText = JSValue.checkedCoerce(data.get("newItemText"), String.class);
             if(itemText == null || itemText.trim().isEmpty()) return;
 
-            VueApp.setValue("newItemText", "");
-            int nextId = VueApp.getValue("nextId", Integer.class) + 1;
-            VueApp.setValue("nextId", nextId);
+            data.set("newItemText","");
+            int nextId = JSValue.checkedCoerce(data.get("nextId"), Integer.class) + 1;
+            data.set("nextId", nextId);
+
 
             JSObject newItem = createItem(nextId, itemText);
-            JSArray shoppingList = VueApp.getValue("shoppingList", JSArray.class);
+            JSArray shoppingList = JSValue.checkedCoerce(data.get("shoppingList"), JSArray.class);
             shoppingList.push(newItem);
         });
 
-        public JSFunction removeItem = JSFunction.fromConsumer(idVal -> {
+        public JSFunction removeItem = JSFunction.fromJSConsWithThis((JSObject data, JSNumber idVal) -> {
             int id = idVal.asInt();
-            JSArray shoppingList = VueApp.getValue("shoppingList", JSArray.class);
+            JSArray shoppingList = JSValue.checkedCoerce(data.get("shoppingList"), JSArray.class);
 
             int index = -1;
             for(int i = 0; i < shoppingList.length; i++) {

@@ -42,10 +42,10 @@ public class RenderTickComponent extends Component {
         this.reactiveState = Vue.reactive(initialState);
 
         // Provide reactive state to Vue's data system
-        this.data = JSFunction.fromSupplier(() -> reactiveState);
+        this.data = JSFunction.fromSupp(() -> reactiveState);
 
         // Define render function using Vue.h
-        this.render = JSFunction.fromSupplier(() -> Vue.h(
+        this.render = JSFunction.fromSupp(() -> Vue.h(
                 "div",
                 new Props(initialState),
                 Vue.h("span", new SpanProps(reactiveState),
@@ -83,13 +83,13 @@ public class RenderTickComponent extends Component {
         public JSFunction onClick;
 
         public SpanProps(JSObject state) {
-            this.onClick = JSFunction.fromRunnable(() -> {
+            this.onClick = JSFunction.fromRun(() -> {
                 // Immediate update
                 state.set("message", JSString.of("Updated on click!"));
                 state.set("style", JSString.of("color: green; font-weight: bold; font-size: 24px;"));
 
                 // Deferred update after next tick
-                Vue.nextTick(JSFunction.fromRunnable(() -> {
+                Vue.nextTick(JSFunction.fromRun(() -> {
                     state.set("message", JSString.of("Final update after next tick!"));
                 }));
             });

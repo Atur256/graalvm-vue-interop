@@ -22,9 +22,12 @@ import org.graalvm.webimage.api.*;
  */
 public class ParentComponent extends Component {
 
-    private static final VueRef sharedCountRef = Vue.ref(0);
+//    public JSObject sharedCountRef = Vue.ref(0);
 
     public ParentComponent() {
+        // Component name for Vue devtools and debugging
+        this.name = JSString.of("ParentComponent");
+
         // Vue template: displays count, doubled value, child component
         this.template = JSString.of("""
                     <div class="app">
@@ -33,6 +36,7 @@ public class ParentComponent extends Component {
                         <p>Count: {{ count }}</p>
                         <p>Doubled: {{ doubledCount }}</p>
                         <button @click="increment">Increment</button>
+                        <button @click="printComponentName">Print Component Name</button>
                 
                         <messageReceiver
                             :parentMessage="message"
@@ -40,6 +44,10 @@ public class ParentComponent extends Component {
                         />
                     </div>
                 """);
+
+        JSObject sharedCountRef = Vue.ref(0);
+
+        this.data = JSFunction.fromSupp(() -> new Data(sharedCountRef));
 
         // Vue methods
         this.methods = new Methods();
@@ -50,22 +58,37 @@ public class ParentComponent extends Component {
         // Computed properties
         this.computed = new Computed();
 
+        System.out.println("Keys: " + sharedCountRef.keys());
+        System.out.println("Keys: " + sharedCountRef.get("_rawValue"));
+
         // Provide values for descendants
-        this.provide = new Provide();
+//        this.provide = new Provide(sharedCountRef);
+
+
+        JSObject provideMap = JSObject.create();
+        provideMap.set("count", sharedCountRef);
+        provideMap.set("message", JSString.of("Injected message!!!"));
+        this.provide = provideMap;
+
+
     }
 
     /**
      * Reactive state exposed to template.
      */
-    public JSObject data() {
-        return new Data();
-    }
+//    public JSObject data() {
+//        return new Data();
+//    }
 
     private static class Data extends JSObject {
 
-        public JSObject count = sharedCountRef.getRef();
+        public JSObject count;
         public JSString message = JSString.of("Hello from Parent!!!");
         public JSString grandMessage = JSString.of("-");
+
+        public Data(JSObject countRef) {
+            this.count = countRef;
+        }
     }
 
     /**
@@ -73,12 +96,14 @@ public class ParentComponent extends Component {
      */
     private static class Methods extends JSObject {
 
-        public JSFunction increment = JSFunction.fromRunnable(() -> {
-            int current = VueApp.getValue("count", Integer.class);
+        public JSFunction increment = JSFunction.fromThisJSCons((JSObject data) -> {
+            int current = JSValue.checkedCoerce(data.get("count"), Integer.class);
             int incremented = current + 1;
-            VueApp.setValue("count", incremented);
-            sharedCountRef.set(incremented);
+            data.set("count", incremented);
         });
+
+        public JSFunction printComponentName = JSFunction.fromBody("console.log(this.$options.name);");
+
     }
 
     /**
@@ -94,7 +119,7 @@ public class ParentComponent extends Component {
      */
     private static class Computed extends JSObject {
 
-        public JSFunction doubledCount = JSFunction.fromJavaFunction((JSObject thisObj) -> {
+        public JSFunction doubledCount = JSFunction.fromFunc((JSObject thisObj) -> {
             int count = JSValue.checkedCoerce(thisObj.get("count"), Integer.class);
             return JSNumber.of(count * 2);
         });
@@ -106,6 +131,10 @@ public class ParentComponent extends Component {
     private static class Provide extends JSObject {
 
         public JSString message = JSString.of("Injected message!!!");
-        public JSObject count = sharedCountRef.getRef();
+        public JSObject count;
+
+        public Provide(JSObject countRef) {
+            this.count = countRef;
+        }
     }
 }

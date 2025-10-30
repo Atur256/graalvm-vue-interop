@@ -54,9 +54,9 @@ public class AppRootComponent extends Component {
      */
     private static class Methods extends JSObject {
 
-        public JSFunction onChildMessage = JSFunction.fromConsumer((JSString msg) -> {
+        public JSFunction onChildMessage = JSFunction.fromJSConsWithThis((JSObject data, JSString msg) -> {
             System.out.println("Parent received event: " + msg.asString());
-            VueApp.setValue("childResponseMessage", msg.asString());
+            data.set("childResponseMessage", msg.asString());
         });
     }
 
@@ -65,7 +65,7 @@ public class AppRootComponent extends Component {
      */
     public static class Plugin extends JSObject {
 
-        public JSFunction install = JSFunction.fromConsumer((JSObject app) -> {
+        public JSFunction install = JSFunction.fromCons((JSObject app) -> {
             JSObject config = JSValue.checkedCoerce(app.get("config"), JSObject.class);
             JSObject globalProperties = JSValue.checkedCoerce(config.get("globalProperties"), JSObject.class);
             globalProperties.set("globalMessage", "Hello from plugin!");
