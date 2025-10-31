@@ -4,9 +4,6 @@ import io.github.atur256.vuewebimageinterop.api.Component;
 import io.github.atur256.webimageinterop.builtin.JSFunction;
 import org.graalvm.webimage.api.*;
 
-import java.util.function.BiFunction;
-import java.util.function.Function;
-
 
 /**
  * AxisLabel is a child Vue component used to render individual labels around the SVG circle.
@@ -57,7 +54,7 @@ public class AxisLabel extends Component {
      */
     private static class Computed extends JSObject {
 
-        // Note: must be written entirely in JS due to GraalVM limitations — `this` cannot be accessed from Java lambdas. And computed functions are called without arguments (this) in vue.
+        // Note: must be written entirely in JS due to GraalVM limitations — `this` cannot be accessed from Java lambdas.
         public JSFunction point = JSFunction.fromBody("""
                     const value = this.stat.value;
                     const index = this.index;

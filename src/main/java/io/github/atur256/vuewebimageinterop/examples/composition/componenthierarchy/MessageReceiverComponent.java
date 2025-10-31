@@ -1,14 +1,10 @@
 package io.github.atur256.vuewebimageinterop.examples.composition.componenthierarchy;
 
 import io.github.atur256.vuewebimageinterop.api.Component;
-import io.github.atur256.vuewebimageinterop.api.Vue;
-import io.github.atur256.vuewebimageinterop.api.VueApp;
 import io.github.atur256.webimageinterop.builtin.JSArray;
 import io.github.atur256.webimageinterop.builtin.JSFunction;
-import org.graalvm.webimage.api.JSNumber;
 import org.graalvm.webimage.api.JSObject;
 import org.graalvm.webimage.api.JSString;
-import org.graalvm.webimage.api.JSValue;
 
 
 /**
@@ -16,145 +12,69 @@ import org.graalvm.webimage.api.JSValue;
  * <p>
  * Demonstrates:
  * <ul>
- *   <li>Receiving props from parent</li>
+ *   <li>Receiving props from the parent component</li>
  *   <li>Emitting events to update parent state</li>
- *   <li>Rendering grandchild component</li>
+ *   <li>Rendering a grandchild component</li>
+ *   <li>Using Vue's provide/inject mechanism to access shared reactive state</li>
  * </ul>
  */
 public class MessageReceiverComponent extends Component {
 
     public MessageReceiverComponent() {
-        // Vue template: displays props and renders grandchild component
+        // Vue template: displays props, injected state, and renders the grandchild component
         this.template = JSString.of("""
                 <div class="child">
                     <h2>Child Component: Prop Receiver</h2>
                     <p>Received Message via props: {{ parentMessage }} ({{ count }})</p>
                     <button @click="decrement">Decrement</button>
-                    <injectedMessageComponent @childEvent="updateParentMessage"/>
+                    <injectedMessageComponent @childEvent="forwardMessageToParent"/>
                 </div>
                 """);
 
-        // Vue method bindings
+        // Vue method bindings for template actions
         this.methods = new Methods();
 
-        // Register grandchild component
+        // Registers grandchild component used in the template
         this.components = new Components();
 
-        // Declare props received from parent
+        // Props received from the parent component
         this.props = new Props();
 
-        this.inject = new JSObject() {{
-            set("count", JSString.of("count"));
-        }};
+        // Inject reactive values from parent using Vue's provide/inject API
+        this.inject = JSArray.of("count");
 
-
-//        this.inject = JSArray.of("count");
-
-//        this.inject = new JSObject() {{
-//            set("count", JSString.of("count"));
-//        }};
-
-
-        // Declare injected keys expected from ancestor
-//        this.inject = JSArray.of("parentCount");
-
-//        this.inject = new JSObject() {{
-//            set("count", JSString.of("count"));
-//        }};
-
-//        this.data = JSFunction.fromSupp(() -> {
-//            JSObject data = JSObject.create();
-//            data.set("count", this.get("count")); // ← pulls from injected context
-//            return data;
-//        });
-//
-//        this.data = JSFunction.fromSupp(() -> {
-//            JSObject data = JSObject.create();
-//            data.set("count", this.get("count")); // pulls injected value from component context
-//            return data;
-//        });
-
-        this.mounted = JSFunction.fromThisJSCons((JSObject ctx) -> {
-            Object count = ctx.get("count");
-            System.out.println("Injected count type: " + count.getClass().getName());
-        });
-
-
+        // Declares custom events this component may emit
+        // Enables validation and tooling support for upward communication
+        this.emits = JSArray.of("childEvent");
     }
 
     /**
-     * Vue method bindings for decrement and parent message update.
+     * Vue method bindings for decrement and message forwarding.
      */
     private static class Methods extends JSObject {
 
         /**
-         * Updates the grandMessage value in parent component
+         * Forwards the message received from the grandchild to the parent.
+         * The original message is passed through unchanged.
+         * <p>
+         * Note:
+         * - Must be written in raw JavaScript due to GraalVM limitations with `this` binding in Java lambdas.
+         * - The `event` parameter is explicitly declared to avoid `$event` scoping issues.
          */
-        public JSFunction updateParentMessage = JSFunction.fromJSConsWithThis((JSObject data, JSString messageVal) -> {
-            String msg = messageVal.asString();
-            data.set("grandMessage", msg);
-            System.out.println("Passed message: " + msg);
-        });
+        public JSFunction forwardMessageToParent = JSFunction.fromArgs("event", "console.log(event); this.$emit('childEvent', event);");
 
         /**
-         * Decrements the shared count value
+         * Decrements the injected count value.
+         * <p>
+         * Note:
+         * - Must be written in raw JavaScript due to GraalVM limitations with `this` binding.
+         * - Injected values are attached directly to the component instance, not to `data()`.
          */
-//        public JSFunction decrement = JSFunction.fromThisJSCons((JSObject data) -> {
-//            int current = JSValue.checkedCoerce(data.get("parentCount"), Integer.class);
-//            int decremented = current - 1;
-//            data.set("parentCount", decremented);
-//        });
-
-//        public JSFunction decrement = JSFunction.fromThisJSCons((JSObject data) -> {
-//            JSObject countRef = (JSObject) data.get("parentCount");
-//            int current = JSValue.checkedCoerce(countRef.get("value"), Integer.class);
-//            countRef.set("value", current - 1);
-//        });
-
-//        public JSFunction decrement = JSFunction.fromThisJSCons((JSObject data) -> {
-//            JSObject countRef = (JSObject) data.get("count");
-//            int current = JSValue.checkedCoerce(countRef.get("value"), Integer.class);
-//            countRef.set("value", current - 1); // ✅ This works — no read-only proxy
-//        });
-
-//        public JSFunction decrement = JSFunction.fromThisJSCons((JSObject data) -> {
-//            try {
-//                System.out.println("Keys: " + data.keys());
-////                int current = JSValue.checkedCoerce(data.get("parentCount"), Integer.class);
-////                int decremented = current - 1;
-////                data.set("parentCount", decremented);
-//            } catch (Exception e) {
-//                System.out.println("Exception caught!!!");
-//                e.printStackTrace();
-//            }
-//        });
-//        public JSFunction decrement = JSFunction.fromThisJSCons((JSObject ctx) -> {
-//            try {
-//                JSObject countRef = (JSObject) ctx.get("parentCount");
-//                int current = JSValue.checkedCoerce(countRef.get("value"), Integer.class);
-//                countRef.set("value", current - 1);
-//            } catch (Exception e) {
-//                System.out.println("Exception caught!");
-//                e.printStackTrace();
-//            }
-//        });
-
-        public JSFunction decrement = JSFunction.fromThisJSCons((JSObject ctx) -> {
-            Object maybeCount = ctx.get("count");
-            System.out.println("Data keys: " + ctx.keys());
-            if (maybeCount instanceof JSObject countRef) {
-                int current = JSValue.checkedCoerce(countRef.get("_rawValue"), Integer.class);
-                countRef.set("_rawValue", current - 1);
-            } else {
-                System.out.println("Injected 'count' is missing or not a JSObject: " + maybeCount.getClass().getName());
-            }
-        });
-
+        public JSFunction decrement = JSFunction.fromBody("this.count = this.count - 1;");
     }
-//    }
 
     /**
-     * Registers grandchild component.
+     * Registers grandchild component used in the template.
      */
     private static class Components extends JSObject {
 
@@ -162,11 +82,14 @@ public class MessageReceiverComponent extends Component {
     }
 
     /**
-     * Props received from parent component.
+     * Props received from the parent component.
+     * <p>
+     * Note:
+     * - Props are read-only and should not be mutated directly.
+     * - Used to pass contextual data from parent to child.
      */
     public static class Props extends JSObject {
 
         public JSString parentMessage;
-//        public JSObject parentCount;
     }
 }

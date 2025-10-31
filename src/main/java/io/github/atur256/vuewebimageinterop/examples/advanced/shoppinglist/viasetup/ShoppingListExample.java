@@ -1,23 +1,21 @@
-package io.github.atur256.vuewebimageinterop.examples.reactivity.watcheffects;
+package io.github.atur256.vuewebimageinterop.examples.advanced.shoppinglist.viasetup;
 
 import io.github.atur256.vuewebimageinterop.api.Component;
 import io.github.atur256.vuewebimageinterop.api.Vue;
 
-
 /**
- * Entry point for the Watch & WatchEffect example using Vue + GraalVM interop.
+ * Entry point for the Shopping List example using Vue + GraalVM interop.
  * <p>
  * Demonstrates:
  * <ul>
- *   <li>Reactive state via {@code Vue.ref}</li>
- *   <li>Computed properties via {@code Vue.computedRef}</li>
- *   <li>Side effect tracking via {@code Vue.watch} and {@code Vue.watchEffect}</li>
+ *   <li>Reactive list management via {@code JSArray}</li>
+ *   <li>Dynamic component rendering using {@code v-for}</li>
+ *   <li>Event-driven item removal via {@code @remove}</li>
  * </ul>
  */
-public class ReactiveWatchExample {
+public class ShoppingListExample {
 
     public static void main(String[] args) {
-
         // Instantiate the root Vue component
         Component component = new RootComponent();
 

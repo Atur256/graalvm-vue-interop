@@ -22,11 +22,6 @@ import org.graalvm.webimage.api.JSValue;
 public class RenderTickComponent extends Component {
 
     /**
-     * Public render function for manual virtual DOM generation.
-     */
-    public JSObject render;
-
-    /**
      * Reactive state tracked by Vue.
      */
     public JSObject reactiveState;
@@ -89,9 +84,7 @@ public class RenderTickComponent extends Component {
                 state.set("style", JSString.of("color: green; font-weight: bold; font-size: 24px;"));
 
                 // Deferred update after next tick
-                Vue.nextTick(JSFunction.fromRun(() -> {
-                    state.set("message", JSString.of("Final update after next tick!"));
-                }));
+                Vue.nextTick(JSFunction.fromRun(() -> state.set("message", JSString.of("Final update after next tick!"))));
             });
         }
     }

@@ -1,12 +1,7 @@
 package io.github.atur256.vuewebimageinterop;
 
-import io.github.atur256.vuewebimageinterop.api.VueRefTemp;
-import io.github.atur256.vuewebimageinterop.examples.advanced.shoppinglist.ShoppingListExample;
 import io.github.atur256.vuewebimageinterop.api.VueApp;
-import io.github.atur256.vuewebimageinterop.examples.basics.counter.CounterExample;
-import io.github.atur256.vuewebimageinterop.examples.composition.componenthierarchy.ComponentHierarchyExample;
-import io.github.atur256.vuewebimageinterop.examples.reactivity.lifecycle.LifecycleHooksExample;
-import io.github.atur256.vuewebimageinterop.examples.reactivity.watcheffects.ReactiveWatchExample;
+import io.github.atur256.vuewebimageinterop.examples.basics.helloworld.HelloWorldExample;
 
 
 /**
@@ -25,20 +20,8 @@ public class Main {
 
         // Instantiate VueApp to ensure core Vue APIs are retained
         new VueApp();
-        new VueRefTemp();
 
         // Run a specific example
-        ComponentHierarchyExample.main(args);
+        HelloWorldExample.main(args);
     }
 }
-
-// TODO:
-// TODO: watchEffect
-// TODO: emit
-// TODO: this
-// TODO: computed
-// TODO: duplicate code and try with annotations
-// TODO: test if java data strcutures can be used öike HashMap
-
-
-// Limitations: "this" can not be accessed from the java code, so all functions relying on "this" need to be fully written in js (e.g. computed)

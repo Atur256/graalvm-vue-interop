@@ -12,15 +12,15 @@ import org.graalvm.webimage.api.JSString;
  * <p>
  * Demonstrates:
  * <ul>
- *   <li>Receiving values via {@code inject} from ancestor components</li>
- *   <li>Emitting events to communicate upward</li>
- *   <li>Rendering injected state in the template</li>
+ *   <li>Receiving reactive values via {@code inject} from ancestor components</li>
+ *   <li>Emitting events to communicate upward to parent components</li>
+ *   <li>Rendering injected state directly in the template</li>
  * </ul>
  */
 public class InjectedMessageComponent extends Component {
 
     public InjectedMessageComponent() {
-        // Vue template: displays injected values and emits event on button click
+        // Vue template: displays injected values and emits an event when the button is clicked
         this.template = JSString.of("""
                 <div class="child">
                     <h2>Grandchild Component: Injected Context</h2>
@@ -29,19 +29,25 @@ public class InjectedMessageComponent extends Component {
                 </div>
                 """);
 
-        // Declare injected keys expected from ancestor
-        this.inject = JSArray.of("message", "count");
-
         // Vue method bindings
         this.methods = new Methods();
+
+        // Declares injected keys expected from ancestor components.
+        // These values are provided via Vue's provide/inject mechanism and are accessible on the component instance.
+        this.inject = JSArray.of("message", "count");
+
+        // Declares custom events this component may emit.
+        // Note: Intentionally mismatched to trigger Vue warning for undeclared event.
+        this.emits = JSArray.of("notTheChildEvent");
     }
 
     /**
      * Vue method bindings for event emission.
+     * <p>
+     * Note: Must be written in raw JavaScript due to GraalVM limitations with `this` binding in Java lambdas.
      */
     private static class Methods extends JSObject {
 
-        // Note: must be written entirely in JS due to GraalVM limitations — `this` cannot be accessed from Java lambdas.
         public JSFunction sendMessage = JSFunction.fromBody("this.$emit('childEvent', 'Hello from Grandchild!');");
     }
 }

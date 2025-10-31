@@ -5,8 +5,6 @@ import io.github.atur256.webimageinterop.builtin.JSArray;
 import io.github.atur256.webimageinterop.builtin.JSFunction;
 import org.graalvm.webimage.api.*;
 
-import java.util.function.BiConsumer;
-
 
 /**
  * PolyGraph is a child Vue component used to render the SVG visualization.
@@ -70,7 +68,7 @@ public class PolyGraph extends Component {
      */
     private static class Computed extends JSObject {
 
-        // Note: must be written entirely in JS due to GraalVM limitations — `this` cannot be accessed from Java lambdas. And computed functions are called without arguments (this) in vue.
+        // Note: must be written entirely in JS due to GraalVM limitations — `this` cannot be accessed from Java lambdas.
         public JSFunction points = JSFunction.fromBody("""
                 return this.stats
                     .map((stat, i) => {

@@ -1,11 +1,9 @@
 package io.github.atur256.vuewebimageinterop.examples.composition.globalcomponentplugin;
 
 import io.github.atur256.vuewebimageinterop.api.Component;
-import io.github.atur256.vuewebimageinterop.api.VueApp;
 import io.github.atur256.webimageinterop.builtin.JSFunction;
 import org.graalvm.webimage.api.JSObject;
 import org.graalvm.webimage.api.JSString;
-import org.graalvm.webimage.api.JSValue;
 
 
 /**
@@ -57,18 +55,6 @@ public class AppRootComponent extends Component {
         public JSFunction onChildMessage = JSFunction.fromJSConsWithThis((JSObject data, JSString msg) -> {
             System.out.println("Parent received event: " + msg.asString());
             data.set("childResponseMessage", msg.asString());
-        });
-    }
-
-    /**
-     * Plugin to inject a global property into the Vue app.
-     */
-    public static class Plugin extends JSObject {
-
-        public JSFunction install = JSFunction.fromCons((JSObject app) -> {
-            JSObject config = JSValue.checkedCoerce(app.get("config"), JSObject.class);
-            JSObject globalProperties = JSValue.checkedCoerce(config.get("globalProperties"), JSObject.class);
-            globalProperties.set("globalMessage", "Hello from plugin!");
         });
     }
 }

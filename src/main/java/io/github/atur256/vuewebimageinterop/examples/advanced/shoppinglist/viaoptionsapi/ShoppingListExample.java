@@ -1,4 +1,4 @@
-package io.github.atur256.vuewebimageinterop.examples.advanced.shoppinglist;
+package io.github.atur256.vuewebimageinterop.examples.advanced.shoppinglist.viaoptionsapi;
 
 import io.github.atur256.vuewebimageinterop.api.Component;
 import io.github.atur256.vuewebimageinterop.api.Vue;
@@ -17,7 +17,6 @@ import io.github.atur256.vuewebimageinterop.api.Vue;
 public class ShoppingListExample {
 
     public static void main(String[] args) {
-
         // Instantiate the root Vue component
         Component component = new RootComponent();
 

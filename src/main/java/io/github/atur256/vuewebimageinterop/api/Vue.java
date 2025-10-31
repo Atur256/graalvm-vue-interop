@@ -3,9 +3,6 @@ package io.github.atur256.vuewebimageinterop.api;
 import io.github.atur256.webimageinterop.builtin.JSFunction;
 import org.graalvm.webimage.api.*;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
 
 /**
  * Static interop access to the global Vue API via GraalVM WebImage.
@@ -19,12 +16,10 @@ import java.lang.annotation.RetentionPolicy;
  *   <li>Virtual DOM rendering helpers</li>
  * </ul>
  * <p>
- * Used with {@link Component}, {@link VueApp}, {@link VueRef}, and {@link VueReactive}.
+ * Used with {@link Component} and {@link VueApp}.
  *
  * @see Component
  * @see VueApp
- * @see VueRef
- * @see VueReactive
  */
 @JS.Import("Vue")
 public class Vue extends JSObject {
@@ -41,6 +36,17 @@ public class Vue extends JSObject {
     @JS.Coerce
     @JS("return Vue.createApp(component);")
     public static native VueApp createApp(Component component);
+
+    /**
+     * Creates a Vue application from a Java-defined component with optional configuration.
+     *
+     * @param component a {@link Component} instance
+     * @param config    a {@link JSObject} containing app-level options (e.g., compilerOptions)
+     * @return a {@link VueApp} representing the app
+     */
+    @JS.Coerce
+    @JS("return Vue.createApp(component, config);")
+    public static native VueApp createApp(Component component, JSObject config);
 
     /**
      * Creates a Vue application from a raw {@link JSObject}.
@@ -63,7 +69,7 @@ public class Vue extends JSObject {
     public static native JSObject rawRef(JSValue value);
 
     /**
-     * Creates a typed {@link VueRef} from a Java value.
+     * Creates a typed {@link JSObject} from a Java value.
      *
      * @param initialValue a Java object or primitive
      * @return a {@link JSObject} wrapping the reactive value
@@ -101,14 +107,25 @@ public class Vue extends JSObject {
     public static native JSObject computed(JSFunction fn);
 
     /**
-     * Creates a computed {@link VueRef} from a {@link JSFunction}.
+     * Watches a reactive source and triggers a callback on change.
      *
-     * @param fn the function returning the computed value
-     * @return a {@link VueRef} wrapping the computed value
+     * @param source   reactive {@link JSObject} to watch
+     * @param callback function to execute on change
+     * @return a {@link JSFunction} representing the watcher
      */
-    public static VueRef computedRef(JSFunction fn) {
-        return VueRef.of(computed(fn));
-    }
+    @JS.Coerce
+    @JS("return Vue.watch(source, callback);")
+    public static native JSFunction watch(JSObject source, JSFunction callback);
+
+    /**
+     * Runs a reactive effect that re-triggers on dependency change.
+     *
+     * @param callback function to execute on dependency change
+     * @return a {@link JSFunction} representing the effect
+     */
+    @JS.Coerce
+    @JS("return Vue.watchEffect(callback);")
+    public static native JSFunction watchEffect(JSFunction callback);
 
     /**
      * Registers a callback to run when the component is mounted.
@@ -179,9 +196,4 @@ public class Vue extends JSObject {
     @JS.Coerce
     @JS("return Vue.nextTick(callback);")
     public static native void nextTick(JSFunction callback);
-
-//    @JS.Coerce
-//    @JS(value = "this.$emit(func, id)")
-//    public static native void emit(String func, int id);
-
 }

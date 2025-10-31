@@ -10,7 +10,7 @@ import org.graalvm.webimage.api.*;
  * Provides methods to mount and unmount the app, register global components,
  * install plugins, and access reactive state from Java using GraalVM WebImage interop.
  * <p>
- * Used with {@link Component}, {@link Vue}, {@link VueRef}, and {@link VueReactive}.
+ * Used with {@link Component} and {@link Vue}.
  */
 public class VueApp extends JSObject {
 
@@ -38,15 +38,6 @@ public class VueApp extends JSObject {
     @JS.Coerce
     @JS("this.onUnmount(callback)")
     public native void onUnmountJS(JSFunction callback);
-
-    /**
-     * Provides values to descendant components via Vue's provide/inject mechanism.
-     *
-     * @param keys one or more keys to provide
-     */
-    @JS.Coerce
-    @JS("this.provide(...keys)")
-    public native void provide(String... keys);
 
     @JS.Coerce
     @JS("this.component(name, definition)")

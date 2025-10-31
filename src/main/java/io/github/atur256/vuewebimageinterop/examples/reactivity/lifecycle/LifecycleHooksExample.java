@@ -6,13 +6,14 @@ import io.github.atur256.webimageinterop.builtin.JSFunction;
 
 
 /**
- * Entry point for the Lifecycle Hooks example using Vue + GraalVM interop.
+ * LifecycleHooksExample is the entry point for launching the Vue app.
  * <p>
  * Demonstrates:
  * <ul>
- *   <li>Lifecycle hook registration via {@code onMounted} and {@code onUnmounted}</li>
+ *   <li>App creation via {@code Vue.createApp}</li>
+ *   <li>Passing the {@code VueApp} instance to the root component</li>
  *   <li>Manual app unmounting triggered from within the component</li>
- *   <li>Interop between component and app instance</li>
+ *   <li>JS-side unmount hook registration via {@code onUnmountJS}</li>
  * </ul>
  */
 public class LifecycleHooksExample {
@@ -20,7 +21,7 @@ public class LifecycleHooksExample {
     public static void main(String[] args) {
 
         // Instantiate the root Vue component
-        LifecycleComponent component = new LifecycleComponent();
+        LifecycleParentComponent component = new LifecycleParentComponent();
 
         // Create the Vue application
         VueApp app = Vue.createApp(component);

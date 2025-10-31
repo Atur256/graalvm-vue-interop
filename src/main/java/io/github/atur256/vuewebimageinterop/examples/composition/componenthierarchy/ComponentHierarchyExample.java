@@ -9,7 +9,7 @@ import io.github.atur256.vuewebimageinterop.api.Vue;
  * <p>
  * Demonstrates:
  * <ul>
- *   <li>Prop passing across parent → child → grandchild</li>
+ *   <li>Prop passing across parent -> child -> grandchild</li>
  *   <li>Reactive state sharing via {@code Vue.ref}</li>
  *   <li>Event emission from grandchild to parent</li>
  *   <li>Computed properties and provide/inject usage</li>

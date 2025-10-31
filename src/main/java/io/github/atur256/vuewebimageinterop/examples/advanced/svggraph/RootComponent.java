@@ -1,7 +1,7 @@
 package io.github.atur256.vuewebimageinterop.examples.advanced.svggraph;
 
 import io.github.atur256.vuewebimageinterop.api.Component;
-import io.github.atur256.vuewebimageinterop.api.VueApp;
+import io.github.atur256.vuewebimageinterop.api.Vue;
 import io.github.atur256.webimageinterop.builtin.JSArray;
 import io.github.atur256.webimageinterop.builtin.JSFunction;
 import org.graalvm.webimage.api.JSNumber;
@@ -9,14 +9,13 @@ import org.graalvm.webimage.api.JSObject;
 import org.graalvm.webimage.api.JSString;
 import org.graalvm.webimage.api.JSValue;
 
-
 /**
  * RootComponent is the root Vue component for this GraalVM-based SVG graph example.
  * <p>
  * Demonstrates:
  * <ul>
- *   <li>Reactive state via {@code data()}</li>
- *   <li>Dynamic SVG rendering via <poly-graph> child component</li>
+ *   <li>Reactive state via {@code setup()}</li>
+ *   <li>Dynamic SVG rendering via {@code <poly-graph>} child component</li>
  *   <li>Interactive stat controls using {@code v-model} and {@code @click}</li>
  * </ul>
  */
@@ -25,82 +24,92 @@ public class RootComponent extends Component {
     public RootComponent() {
         // Vue template: SVG graph plus interactive controls
         this.template = JSString.of("""
-                    <div id="app">
-                        <svg width="200" height="200">
-                            <poly-graph :stats="stats"></poly-graph>
-                        </svg>
-                        <div v-for="stat in stats">
-                            <label>{{stat.label}}</label>
-                            <input type="range" v-model="stat.value" min="0" max="100">
-                            <span>{{stat.value}}</span>
-                            <button @click="remove(stat)" class="remove">X</button>
-                        </div>
-                        <form id="add">
-                            <input name="newlabel" v-model="newLabel">
-                            <button @click="add">Add a Stat</button>
-                        </form>
-                        <pre id="raw">{{ stats }}</pre>
-                    </div>
-                """);
-
-        // Bind Vue methods
-        this.methods = new Methods();
+            <div id="app">
+                <svg width="200" height="200">
+                    <poly-graph :stats="stats"></poly-graph>
+                </svg>
+                <div v-for="stat in stats">
+                    <label>{{stat.label}}</label>
+                    <input type="range" v-model="stat.value" min="0" max="100">
+                    <span>{{stat.value}}</span>
+                    <button @click="remove(stat)" class="remove">X</button>
+                </div>
+                <form id="add">
+                    <input name="newlabel" v-model="newLabel">
+                    <button @click="add">Add a Stat</button>
+                </form>
+                <pre id="raw">{{ stats }}</pre>
+            </div>
+        """);
 
         // Register child components
         this.components = new Components();
     }
 
     /**
-     * Provides reactive state for this component:
+     * Composition API setup function.
+     * <p>
+     * Returns a {@link JSObject} containing reactive state and methods
+     * that are exposed to the template and component context.
+     */
+    @Override
+    public JSObject setup() {
+        return new Setup();
+    }
+
+    /**
+     * Reactive bindings exposed by the {@code setup()} function.
+     * <p>
+     * Includes:
      * <ul>
-     *   <li>{@code newLabel} – input field for new stats</li>
-     *   <li>{@code stats} – array of stat objects (label + value)</li>
+     *   <li>{@code stats} – reactive array of stat objects</li>
+     *   <li>{@code newLabel} – input field binding for new stat label</li>
+     *   <li>{@code add()} – method to add a new stat</li>
+     *   <li>{@code remove()} – method to remove a stat (minimum of 3 required)</li>
      * </ul>
      */
-    public JSObject data() {
-        return new Data();
-    }
+    public static class Setup extends JSObject {
 
-    /**
-     * Reactive state model for the SVG graph component.
-     */
-    private static class Data extends JSObject {
+        // Input field binding for new stat label
+        public JSObject newLabel = Vue.ref("");
 
-        public JSString newLabel = JSString.of("");
-        public JSArray stats = initialiseStatArray();
-    }
+        // Reactive array of stat objects
+        public JSObject stats = Vue.ref(initialiseStatArray());
 
-    /**
-     * Vue method bindings for adding/removing stats.
-     */
-    private static class Methods extends JSObject {
-
-        public JSFunction add = JSFunction.fromJSConsWithThis((JSObject data, JSObject e) -> {
+        // Adds a new stat to the graph
+        public JSFunction add = JSFunction.fromJSCons((JSObject e) -> {
             JSFunction.fromArgs("obj", "obj.preventDefault();").call(e);
 
-            String newLabel = JSValue.checkedCoerce(data.get("newLabel"), String.class);
-            if(newLabel.isEmpty()) return;
+            String newText = JSValue.checkedCoerce(newLabel.get("value"), String.class);
+            if (newText.isEmpty()) return;
 
-            JSArray stats = JSValue.checkedCoerce(data.get("stats"), JSArray.class);
-            stats.push(createItem(newLabel));
-            data.set("newLabel", "Test");
+            JSArray arr = JSValue.checkedCoerce(stats.get("value"), JSArray.class);
+            arr.push(createItem(newText));
+
+            newLabel.set("value", JSString.of(""));
         });
 
-        public JSFunction remove = JSFunction.fromJSConsWithThis((JSObject data, JSObject stat) -> {
-            JSArray stats = JSValue.checkedCoerce(data.get("stats"), JSArray.class);
-            if(stats.length > 3) stats.splice(stats.indexOf(stat), 1);
-            else System.err.println("Can't delete more!");
+        // Removes a stat from the graph (minimum of 3 stats required)
+        public JSFunction remove = JSFunction.fromJSCons((JSObject stat) -> {
+            JSArray arr = JSValue.checkedCoerce(stats.get("value"), JSArray.class);
+            if (arr.length > 3) {
+                arr.splice(arr.indexOf(stat), 1);
+            } else {
+                System.err.println("Can't delete more!");
+            }
         });
     }
 
     /**
-     * Registers child components used in the template, including <poly-graph>.
+     * Registers child components used in the template, including {@code <poly-graph>}.
      */
     private static class Components extends JSObject {
-
         public Component polyGraph = new PolyGraph();
     }
 
+    /**
+     * Initializes the stat array with default labeled values.
+     */
     private static JSArray initialiseStatArray() {
         return JSArray.of(
                 createItem("A"),
@@ -112,6 +121,12 @@ public class RootComponent extends Component {
         );
     }
 
+    /**
+     * Creates a single stat item with label and default value.
+     *
+     * @param label the label for the stat
+     * @return a {@link JSObject} representing the stat
+     */
     private static JSObject createItem(String label) {
         JSObject item = JSObject.create();
         item.set("label", JSString.of(label));
