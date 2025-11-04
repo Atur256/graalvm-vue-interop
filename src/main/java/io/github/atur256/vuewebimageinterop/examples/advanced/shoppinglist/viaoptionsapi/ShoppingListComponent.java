@@ -42,7 +42,7 @@ public class ShoppingListComponent extends Component {
      */
     public static class Methods extends JSObject {
 
-        // Note: must be written entirely in JS due to GraalVM limitations — this cannot be accessed from Java lambdas.
+        // Note: must be written entirely in JS due to a bug with GraalVM and Vue — `this` does not get passed correctly.
         public JSFunction emitMessage = JSFunction.fromArgs("item", "this.$emit('remove', item.id);");
     }
 

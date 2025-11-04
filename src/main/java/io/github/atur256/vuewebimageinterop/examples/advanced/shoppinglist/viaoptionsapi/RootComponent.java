@@ -70,7 +70,7 @@ public class RootComponent extends Component {
     private static class Methods extends JSObject {
 
         // Adds a new item to the shopping list
-        // Note: must be written entirely in JS due to GraalVM limitations — this cannot be accessed from Java lambdas.
+        // Note: must be written entirely in JS due to a bug with GraalVM and Vue — `this` does not get passed correctly.
         public JSFunction addItem = JSFunction.fromBody("""
             const itemText = this.newItemText.trim();
             if (!itemText) return;
@@ -86,7 +86,7 @@ public class RootComponent extends Component {
         """);
 
         // Removes an item from the shopping list by ID
-        // Note: must be written entirely in JS due to GraalVM limitations — this cannot be accessed from Java lambdas.
+        // Note: must be written entirely in JS due to a bug with GraalVM and Vue — `this` does not get passed correctly.
         public JSFunction removeItem = JSFunction.fromArgs("id", """
             const index = this.shoppingList.findIndex(item => item.id === id);
             if (index !== -1) {

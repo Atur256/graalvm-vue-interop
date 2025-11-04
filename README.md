@@ -144,7 +144,7 @@ Provides methods for mounting, managing global components, plugins, and accessin
 - **App lifecycle**
     - `mount()` — mounts the app to the DOM element with id `#app`, returns the root component instance
     - `unmount()` — unmounts the app
-    - `onUnmountJS(JSFunction)` — register a callback to run when the app is unmounted
+    - `onUnmount(JSFunction)` — register a callback to run when the app is unmounted
 - **Global components**
     - `component(String name, JSObject definition)` — register a global component
 - **Plugins**
@@ -179,32 +179,34 @@ This ensures that all Vue components, whether defined using the Options API or p
 
 This project has several important limitations to be aware of:
 
-1. **JavaScript `this` usage in Vue functions**
-    - Java code **cannot access the JavaScript `this`** in Vue functions because GraalVM currently **does not support `this` in Java lambdas**.
-    - All functions that rely on JavaScript `this` (e.g., computed properties, methods accessing props or injected values) **must be fully written in JavaScript**.
-    - JavaScript code can be embedded using:
-        - `JSFunction.fromArgs(...)`
-        - `JSFunction.fromBody(...)`
-        - `JSEval.eval(...)`
-    - Using the Composition API (`setup()`) can partially mitigate this limitation, as reactive bindings returned from `setup()` can be used without relying on JavaScript `this`.
+### 1. JavaScript `this` usage in Vue functions
+- Due to a bug in the interaction between **GraalVM and Vue**, the JavaScript `this` object is **not passed correctly** when invoking Java-defined functions.
+- As a result, Java code **cannot reliably access `this`** inside Vue lifecycle hooks, methods, or computed properties.
+- Any function that depends on `this` (e.g., accessing props, injected values, or component state) **must be written in JavaScript**.
+- JavaScript code can be embedded using:
+    - `JSFunction.fromArgs(...)`
+    - `JSFunction.fromBody(...)`
+    - `JSEval.eval(...)`
+- Using the Composition API (`setup()`) can partially mitigate this limitation, since reactive bindings returned from `setup()` do not rely on `this`.
 
-2. **Composition API (`setup`)**
-    - `setup()` is **declared in `Component` by default** and returns `JSValue.undefined()`.
-    - If a component **does not use the Composition API**, `setup()` **must not be overridden**, as doing so will **break the `data()` function** and reactive state initialization.
-    - If a component **uses `setup()`**, it must be **overridden** to provide the reactive bindings.
+### 2. Composition API (`setup`)
+- `setup()` is **declared in `Component` by default** and returns `JSValue.undefined()`.
+- If a component **does not use the Composition API**, `setup()` **must not be overridden**, as doing so will **break the `data()` function** and reactive state initialization.
+- If a component **uses `setup()`**, it must be **overridden** to provide the reactive bindings.
 
-3. **Deep watchers**
-    - Must be defined as **anonymous `JSObject`** instead of named Java classes.
-    - Named Java classes can cause Vue's deep reactivity system to recursively traverse the proxy, leading to stack overflows or "too much recursion" errors.
+### 3. Deep watchers
+- Must be defined as **anonymous `JSObject`** instead of named Java classes.
+- Named Java classes can cause Vue's deep reactivity system to recursively traverse the proxy, leading to stack overflows or "too much recursion" errors.
 
-4. **`extends`**
-    - Vue’s `extends` option **clashes with Java’s `extends` keyword**.
-    - As a result, extending components via Vue’s `extends` is currently skipped.
-5. **Compiler options**
-    - `compilerOptions` currently do not work and are **not yet supported in this integration**.
+### 4. `extends`
+- Vue’s `extends` option **clashes with Java’s `extends` keyword**.
+- As a result, extending components via Vue’s `extends` is currently skipped.
 
-6. **Server-side prefetch**
-    - `serverPrefetch` is skipped, as SSR is not supported in this project.
+### 5. Compiler options
+- `compilerOptions` currently do not work and are **not yet supported in this integration**.
+
+### 6. Server-side prefetch
+- `serverPrefetch` is skipped, as SSR is not supported in this project.
 
 ---
 

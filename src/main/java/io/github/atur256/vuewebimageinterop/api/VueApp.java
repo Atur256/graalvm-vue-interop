@@ -3,7 +3,6 @@ package io.github.atur256.vuewebimageinterop.api;
 import io.github.atur256.webimageinterop.builtin.JSFunction;
 import org.graalvm.webimage.api.*;
 
-
 /**
  * Represents a Vue application instance created via {@link Vue#createApp(Component)}.
  * <p>
@@ -12,7 +11,18 @@ import org.graalvm.webimage.api.*;
  * <p>
  * Used with {@link Component} and {@link Vue}.
  */
-public class VueApp extends JSObject {
+public class VueApp {
+
+    private final JSObject app;
+
+    /**
+     * Constructs a VueApp wrapper around a JSObject.
+     *
+     * @param app the underlying JSObject representing the Vue app
+     */
+    public VueApp(JSObject app) {
+        this.app = app;
+    }
 
     /**
      * Mounts the Vue application to the DOM element with id "#app".
@@ -20,15 +30,23 @@ public class VueApp extends JSObject {
      * @return the root component instance as {@link JSObject}
      */
     @JS.Coerce
-    @JS("return this.mount('#app')")
-    public native JSObject mount();
+    @JS("return self.mount('#app')")
+    private native JSObject mountInternal(JSObject self);
+
+    public JSObject mount() {
+        return mountInternal(app);
+    }
 
     /**
      * Unmounts the Vue application.
      */
     @JS.Coerce
-    @JS("this.unmount('#app')")
-    public native void unmount();
+    @JS("self.unmount('#app')")
+    private native void unmountInternal(JSObject self);
+
+    public void unmount() {
+        unmountInternal(app);
+    }
 
     /**
      * Registers a callback to run when the app is unmounted.
@@ -36,12 +54,16 @@ public class VueApp extends JSObject {
      * @param callback a {@link JSFunction} to run on unmount
      */
     @JS.Coerce
-    @JS("this.onUnmount(callback)")
-    public native void onUnmountJS(JSFunction callback);
+    @JS("self.onUnmount(callback)")
+    private native void onUnmountInternal(JSObject self, JSFunction callback);
+
+    public void onUnmount(JSFunction callback) {
+        onUnmountInternal(app, callback);
+    }
 
     @JS.Coerce
-    @JS("this.component(name, definition)")
-    private native void componentJS(String name, JSObject definition);
+    @JS("self.component(name, definition)")
+    private native void componentInternal(JSObject self, String name, JSObject definition);
 
     /**
      * Registers a global component with the Vue application.
@@ -51,13 +73,13 @@ public class VueApp extends JSObject {
      * @return this {@link VueApp} instance for chaining
      */
     public VueApp component(String name, JSObject definition) {
-        this.componentJS(name, definition);
+        componentInternal(app, name, definition);
         return this;
     }
 
     @JS.Coerce
-    @JS("this.use(plugin)")
-    private native void useJS(JSObject plugin);
+    @JS("self.use(plugin)")
+    private native void useInternal(JSObject self, JSObject plugin);
 
     /**
      * Installs a plugin into the Vue application.
@@ -66,7 +88,14 @@ public class VueApp extends JSObject {
      * @return this {@link VueApp} instance for chaining
      */
     public VueApp use(JSObject plugin) {
-        this.useJS(plugin);
+        useInternal(app, plugin);
         return this;
+    }
+
+    /**
+     * Returns the underlying JSObject representing the Vue app.
+     */
+    public JSObject getJSObject() {
+        return app;
     }
 }

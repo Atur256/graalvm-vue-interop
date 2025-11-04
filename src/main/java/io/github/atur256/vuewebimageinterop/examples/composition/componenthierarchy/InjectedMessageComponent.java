@@ -44,7 +44,7 @@ public class InjectedMessageComponent extends Component {
     /**
      * Vue method bindings for event emission.
      * <p>
-     * Note: Must be written in raw JavaScript due to GraalVM limitations with `this` binding in Java lambdas.
+     * Note: must be written entirely in JS due to a bug with GraalVM and Vue — `this` does not get passed correctly.
      */
     private static class Methods extends JSObject {
 

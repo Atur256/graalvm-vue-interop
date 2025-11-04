@@ -58,7 +58,7 @@ public class MessageReceiverComponent extends Component {
          * The original message is passed through unchanged.
          * <p>
          * Note:
-         * - Must be written in raw JavaScript due to GraalVM limitations with `this` binding in Java lambdas.
+         * - Must be written entirely in JS due to a bug with GraalVM and Vue — `this` does not get passed correctly.
          * - The `event` parameter is explicitly declared to avoid `$event` scoping issues.
          */
         public JSFunction forwardMessageToParent = JSFunction.fromArgs("event", "console.log(event); this.$emit('childEvent', event);");
@@ -67,7 +67,7 @@ public class MessageReceiverComponent extends Component {
          * Decrements the injected count value.
          * <p>
          * Note:
-         * - Must be written in raw JavaScript due to GraalVM limitations with `this` binding.
+         * - Must be written entirely in JS due to a bug with GraalVM and Vue — `this` does not get passed correctly.
          * - Injected values are attached directly to the component instance, not to `data()`.
          */
         public JSFunction decrement = JSFunction.fromBody("this.count = this.count - 1;");

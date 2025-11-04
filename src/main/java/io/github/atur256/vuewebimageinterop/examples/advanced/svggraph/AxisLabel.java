@@ -54,7 +54,7 @@ public class AxisLabel extends Component {
      */
     private static class Computed extends JSObject {
 
-        // Note: must be written entirely in JS due to GraalVM limitations — `this` cannot be accessed from Java lambdas.
+        // Note: must be written entirely in JS due to a bug with GraalVM and Vue — `this` does not get passed correctly.
         public JSFunction point = JSFunction.fromBody("""
                     const value = this.stat.value;
                     const index = this.index;

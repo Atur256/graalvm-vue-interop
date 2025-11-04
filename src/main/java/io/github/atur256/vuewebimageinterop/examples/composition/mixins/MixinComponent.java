@@ -67,7 +67,7 @@ public class MixinComponent extends Component {
         });
 
         // Method to increment sharedCount
-        // Note: Must use raw JS string due to `this` binding limitations in Java lambdas
+        // Note: must be written entirely in JS due to a bug with GraalVM and Vue — `this` does not get passed correctly.
         public JSObject methods = new JSObject() {
             public JSFunction increment = JSFunction.fromBody("this.sharedCount++");
         };
