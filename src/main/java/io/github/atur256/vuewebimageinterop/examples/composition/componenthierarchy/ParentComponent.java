@@ -81,7 +81,7 @@ public class ParentComponent extends Component {
          * Increments the reactive count value.
          * Note: count is a Vue ref, so we access and mutate its .value field.
          */
-        public JSFunction increment = JSFunction.fromThisJSCons((JSObject data) -> {
+        public JSFunction increment = JSFunction.fromThisCons((JSObject data) -> {
             int current = JSValue.checkedCoerce(data.get("count"), Integer.class);
             data.set("count", JSNumber.of(current + 1));
         });
@@ -97,7 +97,7 @@ public class ParentComponent extends Component {
         /**
          * Updates grandMessage with the value received from the child event.
          */
-        public JSFunction handleChildEvent = JSFunction.fromJSConsWithThis((JSObject data, JSString messageVal) -> {
+        public JSFunction handleChildEvent = JSFunction.fromConsWithThis((JSObject data, JSString messageVal) -> {
             String msg = messageVal.asString();
             data.set("grandMessage", msg);
             System.out.println("[Parent] Received message from child: " + msg);

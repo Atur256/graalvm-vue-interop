@@ -77,20 +77,25 @@ public class RootComponent extends Component {
         public JSObject stats = Vue.ref(initialiseStatArray());
 
         // Adds a new stat to the graph
-        public JSFunction add = JSFunction.fromJSCons((JSObject e) -> {
-            JSFunction.fromArgs("obj", "obj.preventDefault();").call(e);
+        public JSFunction add = JSFunction.fromCons((JSObject e) -> {
+            try {
+                JSFunction.fromArgs("obj", "obj.preventDefault();").invoke(e);
 
-            String newText = JSValue.checkedCoerce(newLabel.get("value"), String.class);
-            if (newText.isEmpty()) return;
+                String newText = JSValue.checkedCoerce(newLabel.get("value"), String.class);
+                if (newText.isEmpty()) return;
 
-            JSArray arr = JSValue.checkedCoerce(stats.get("value"), JSArray.class);
-            arr.push(createItem(newText));
+                JSArray arr = JSValue.checkedCoerce(stats.get("value"), JSArray.class);
+                arr.push(createItem(newText));
 
-            newLabel.set("value", JSString.of(""));
+                newLabel.set("value", JSString.of(""));
+            } catch (Exception ex) {
+                System.out.println("Exception caught!!!!");
+                ex.printStackTrace();
+            }
         });
 
         // Removes a stat from the graph (minimum of 3 stats required)
-        public JSFunction remove = JSFunction.fromJSCons((JSObject stat) -> {
+        public JSFunction remove = JSFunction.fromCons((JSObject stat) -> {
             JSArray arr = JSValue.checkedCoerce(stats.get("value"), JSArray.class);
             if (arr.length > 3) {
                 arr.splice(arr.indexOf(stat), 1);

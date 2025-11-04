@@ -126,7 +126,7 @@ public class LifecycleComponent extends Component {
         public JSFunction updateMessage;
 
         public Methods() {
-            updateMessage = JSFunction.fromThisJSCons((JSObject data) -> {
+            updateMessage = JSFunction.fromThisCons((JSObject data) -> {
                 String current = JSValue.checkedCoerce(data.get("message"), String.class);
                 String updated = current + " updated";
                 data.set("message", JSString.of(updated));

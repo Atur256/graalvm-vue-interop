@@ -92,7 +92,7 @@ public class RootComponent extends Component {
         });
 
         // Remove an item from the shopping list
-        public JSFunction removeItem = JSFunction.fromJSCons((JSNumber idVal) -> {
+        public JSFunction removeItem = JSFunction.fromCons((JSNumber idVal) -> {
             int id = idVal.asInt();
             JSArray list = JSValue.checkedCoerce(shoppingList.get("value"), JSArray.class);
 

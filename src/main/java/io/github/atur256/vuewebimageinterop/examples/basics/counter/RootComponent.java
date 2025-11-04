@@ -70,13 +70,13 @@ public class RootComponent extends Component {
     private static class Methods extends JSObject {
 
         // Increments the counter by 1
-        public JSFunction increment = JSFunction.fromThisJSCons((JSObject data) -> {
+        public JSFunction increment = JSFunction.fromThisCons((JSObject data) -> {
             int current = JSValue.checkedCoerce(data.get("count"), Integer.class);
             data.set("count", current + 1);
         });
 
         // Decrements the counter by 1
-        public JSFunction decrement = JSFunction.fromThisJSCons((JSObject data) -> {
+        public JSFunction decrement = JSFunction.fromThisCons((JSObject data) -> {
             int current = JSValue.checkedCoerce(data.get("count"), Integer.class);
             int decremented = current - 1;
             data.set("count", JSNumber.of(decremented));
@@ -94,7 +94,7 @@ public class RootComponent extends Component {
     private static class Computed extends JSObject {
 
         // Computes status label based on count value
-        public JSFunction status = JSFunction.fromThisJSFunc((JSObject data) -> {
+        public JSFunction status = JSFunction.fromThisFunc((JSObject data) -> {
             int value = JSValue.checkedCoerce(data.get("count"), Integer.class);
             return JSString.of(value > 4 ? "High" : (value < 0 ? "Minus" : "Low"));
         });
