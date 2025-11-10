@@ -1,0 +1,6 @@
+WebImage Interop Extension
+Copyright (c) 2025 Arthur Schwaiger
+
+This product includes code that depends on the GraalVM SDK,
+which is licensed under the Universal Permissive License (UPL), Version 1.0.
+GraalVM is a trademark of Oracle and/or its affiliates.
