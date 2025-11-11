@@ -5,14 +5,14 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.atur256.vuewebimageinterop</groupId>
-    <artifactId>vue-webimage-interop</artifactId>
+    <groupId>io.github.atur256.graalvmvueinterop</groupId>
+    <artifactId>graalvm-vue-interop</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>vue-webimage-interop</name>
-    <description>Define Vue.js components in Java using GraalVM WebImage Interop</description>
-    <url>https://github.com/atur256/vue-webimage-interop</url>
+    <name>graalvm-vue-interop</name>
+    <description>Java-first Vue components using GraalVM WebImage interop</description>
+    <url>https://github.com/Atur256/graalvm-vue-interop</url>
 
     <licenses>
         <license>
@@ -32,9 +32,9 @@
     </developers>
 
     <scm> <!-- TODO: check this -->
-        <connection>scm:git:https://github.com/atur256/vue-webimage-interop.git</connection>
-        <developerConnection>scm:git:https://github.com/atur256/vue-webimage-interop.git</developerConnection>
-        <url>https://github.com/atur256/vue-webimage-interop</url>
+        <connection>scm:git:https://github.com/Atur256/graalvm-vue-interop.git</connection>
+        <developerConnection>scm:git:https://github.com/Atur256/graalvm-vue-interop.git</developerConnection>
+        <url>https://github.com/Atur256/graalvm-vue-interop</url>
     </scm>
 
     <properties> <!-- TODO: check this -->
@@ -46,8 +46,8 @@
     <dependencies>
         <!-- WebImage Interop Dependency (local or replace when published) -->
         <dependency>  <!-- TODO: replace this -->
-            <groupId>com.oracle.webinterop</groupId>
-            <artifactId>web-image-interop</artifactId>
+            <groupId>com.oracle.graalvmwebimageinterop</groupId>
+            <artifactId>graalvm-webimage-interop</artifactId>
             <version>1.0.0</version>
         </dependency>
     </dependencies>
@@ -141,7 +141,7 @@
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>io.github.atur256.vuewebimageinterop.Main</mainClass>
+                                    <mainClass>io.github.atur256.graalvmvueinterop.Main</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>

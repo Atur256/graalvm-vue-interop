@@ -1,0 +1,103 @@
+/*
+ * Copyright (c) 2025 Arthur Schwaiger
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package io.github.atur256.graalvmvueinterop.examples.advanced.svggraph;
+
+import io.github.atur256.graalvmvueinterop.api.Component;
+import io.github.atur256.graalvmwebimageinterop.builtin.JSArray;
+import io.github.atur256.graalvmwebimageinterop.builtin.JSFunction;
+import org.graalvm.webimage.api.*;
+
+
+/**
+ * PolyGraph is a child Vue component used to render the SVG visualization.
+ * <p>
+ * Demonstrates:
+ * <ul>
+ *   <li>Computed geometry for polygon points</li>
+ *   <li>Rendering SVG elements: polygon, circle, and axis labels</li>
+ *   <li>Prop passing from parent component</li>
+ *   <li>Child component registration</li>
+ * </ul>
+ */
+public class PolyGraph extends Component {
+
+    public PolyGraph() {
+        // Vue template: SVG group with polygon, circle, and axis labels
+        this.template = JSString.of("""
+                <g>
+                    <polygon :points="points"></polygon>
+                    <circle cx="100" cy="100" r="80"></circle>
+                    <axis-label
+                      v-for="(stat, index) in stats"
+                      :stat="stat"
+                      :index="index"
+                      :total="stats.length">
+                    </axis-label>
+                </g>
+                """);
+
+        // Props received from parent component
+        this.props = new Props();
+
+        // Register child component <axis-label>
+        this.components = new Components();
+
+        // Computed property to calculate polygon points
+        this.computed = new Computed();
+    }
+
+    /**
+     * Props received from parent component.
+     */
+    private static class Props extends JSObject {
+
+        /**
+         * Array of stat objects containing label and value
+         */
+        public JSArray stats;
+    }
+
+    /**
+     * Child components used in this template.
+     */
+    private static class Components extends JSObject {
+
+        public Component axisLabel = new AxisLabel();
+    }
+
+    /**
+     * Computed properties for derived polygon geometry.
+     */
+    private static class Computed extends JSObject {
+
+        // Note: must be written entirely in JS due to a bug with GraalVM and Vue — `this` does not get passed correctly.
+        public JSFunction points = JSFunction.fromBody("""
+                return this.stats
+                    .map((stat, i) => {
+                        const x = 0;
+                        const y = -stat.value * 0.8;
+                        const angle = ((Math.PI * 2) / this.stats.length) * i;
+                        const cos = Math.cos(angle);
+                        const sin = Math.sin(angle);
+                        const tx = x * cos - y * sin + 100;
+                        const ty = x * sin + y * cos + 100;
+                        return `${tx},${ty}`;
+                    })
+                    .join(' ');
+                """);
+    }
+}
