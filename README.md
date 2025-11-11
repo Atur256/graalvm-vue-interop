@@ -1,6 +1,6 @@
-# GraalVM Vue WebImage Integration
+# GraalVM Vue Interop
 
-This library demonstrates how to define **Vue.js components in Java using the Vue Options API**, and how to generate executable JavaScript automatically using [GraalVM](https://www.graalvm.org/) with the [WebImage Interop Extension](https://github.com/Atur256/web-image-interop).
+This library demonstrates how to define **Vue.js components in Java using the Vue Options API**, and how to generate executable JavaScript automatically using [GraalVM](https://www.graalvm.org/) with the [WebImage Interop Extension](https://github.com/Atur256/graalvm-webimage-interop).
 
 It allows developers to write **Java-first Vue components**, supporting both the **Options API** and parts of the **Composition API** (`setup()`, `ref()`, `reactive()`) for reactive state and computed properties.
 
@@ -10,7 +10,7 @@ This repository forms part of a **bachelor’s thesis** exploring Java–JavaScr
 
 ## Dependency
 
-> **Important:** This project depends on the [WebImage Interop Extension](https://github.com/Atur256/web-image-interop), which in turn relies on GraalVM.  
+> **Important:** This project depends on the [WebImage Interop Extension](https://github.com/Atur256/graalvm-webimage-interop), which in turn relies on GraalVM.  
 > Ensure the extension is included in your project to enable Java-to-JavaScript interop and generate JavaScript bundles from Java-defined Vue components.
 
 ---
