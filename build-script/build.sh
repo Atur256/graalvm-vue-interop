@@ -1,42 +1,42 @@
 #!/bin/bash
-
-# === STORE ORIGINAL JAVA ENV ===
-ORIGINAL_JAVA_HOME="$JAVA_HOME"
-ORIGINAL_PATH="$PATH"
-
-# === FORCE JDK 25 ===
-export JAVA_HOME=/usr/lib/jvm/java-25-openjdk
-export PATH=$JAVA_HOME/bin:$PATH
-
-# === LOAD MX CONFIG ===
-source ./mx.config
-MX_DIR="$MX_WORKDIR"
+set -euo pipefail
 
 # === CONFIGURATION ===
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-JAR_PATH="$PROJECT_DIR/target/graalvm-vue-interop-1.0.0.jar"
+OUTPUT_DIR="$PROJECT_DIR/output"
 MAIN_CLASS="io.github.atur256.graalvmvueinterop.Main"
-MX_OUTPUT="io.github.atur256.graalvmvueinterop.main.js"
+MAIN_JAR="$PROJECT_DIR/target/graalvm-vue-interop-0.0.1.jar"
 CUSTOM_OUTPUT="$PROJECT_DIR/html-demo"
 
-## === STEP 1: Build with Maven ===
+# === ARGUMENTS OR CONFIG FILE ===
+if [[ $# -ge 2 ]]; then
+  echo "Using command-line arguments for configuration..."
+  GRAALVM_BIN="$1"
+  JAVA_HOME_OVERRIDE="$2"
+else
+  CONFIG_FILE="$PROJECT_DIR/build-script/build.config"
+  if [[ ! -f "$CONFIG_FILE" ]]; then
+    echo "Usage: $0 <GRAALVM_BIN> <JAVA_HOME_OVERRIDE>"
+    echo "Or provide a build.config file with GRAALVM_BIN and JAVA_HOME_OVERRIDE."
+    exit 1
+  fi
+  echo "Loading configuration from $CONFIG_FILE..."
+  source "$CONFIG_FILE"
+fi
+
+# === FORCE CONFIGURED JDK ===
+export JAVA_HOME="$JAVA_HOME_OVERRIDE"
+export PATH="$JAVA_HOME/bin:$PATH"
+
+## === STEP 1: Compile and package with Maven ===
 echo "Building Maven project..."
-cd "$PROJECT_DIR" || exit 1
-mvn clean package
+cd "$PROJECT_DIR"
+MAVEN_OPTS="--enable-native-access=ALL-UNNAMED" mvn clean package
 
-# === STEP 2: Restore original Java before mx ===
-export JAVA_HOME="$ORIGINAL_JAVA_HOME"
-export PATH="$ORIGINAL_PATH"
-
-# === STEP 3: Run mx web-image in Graal workdir ===
-echo "Running mx web-image in $MX_DIR..."
-cd "$MX_DIR" || exit 1
-mx web-image -Ob -H:-ClosureCompiler -cp "$JAR_PATH" "$MAIN_CLASS"
-
-# === STEP 4: Move output to build-output ===
-echo "Copying output to $CUSTOM_OUTPUT..."
-mkdir -p "$CUSTOM_OUTPUT"
-mv "$MX_OUTPUT" "$CUSTOM_OUTPUT/app.js"
+## === STEP 2: Run web-image build ===
+echo "Running web-image from $GRAALVM_BIN..."
+"$GRAALVM_BIN/web-image" \
+  -o "$CUSTOM_OUTPUT/app" \
+  -Ob -cp "$MAIN_JAR" "$MAIN_CLASS"
 
 echo "Build complete. Output is ready in: $CUSTOM_OUTPUT"
-

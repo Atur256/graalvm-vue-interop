@@ -36,6 +36,10 @@ src/
 │ │ ├─ examples/            # Example Vue components written in Java
 │ │ └─ Main.java            # Entry point for generating JavaScript bundles
 └─ html-demo/               # Demo HTML and CSS files
+
+build-script/ 
+├─ build.sh                 # Build script for Maven + GraalVM WebImage 
+└─ build.config             # Optional configuration file
 ```
 ---
 
@@ -81,7 +85,9 @@ Represents a Vue application instance. Supports:
 
 ---
 
-## Examples & Testing
+## Examples & Build
+
+### Examples
 
 The `examples/` directory contains demos showcasing:
 
@@ -91,6 +97,67 @@ The `examples/` directory contains demos showcasing:
 - **Advanced apps:** shopping lists, SVG graphs
 
 `Main.java` serves as a launcher to generate JavaScript bundles (`app.js`) from Java components, ensuring browser-ready execution.
+
+---
+
+### Build Script
+
+The build script `build-script/build.sh` automates compilation and GraalVM WebImage generation.
+
+#### Configuration
+
+The script requires two paths:
+- `GRAALVM_BIN`: Path to the GraalVM `bin` directory (where `web-image` resides).
+- `JAVA_HOME_OVERRIDE`: Path to the JDK you want to force for compilation. (Optional)
+
+#### Input Options
+
+You can provide configuration either:
+
+1. **Command-line arguments**:
+   ```bash
+   ./build.sh <GRAALVM_BIN> <JAVA_HOME_OVERRIDE>
+   ```
+   
+2. **Configuration file (build.config)**:
+
+   Define `GRAALVM_BIN` and `JAVA_HOME_OVERRIDE` in `build.config`.
+
+   Example:
+    ```bash
+    # === GraalVM Build Configuration ===
+    # Path to GraalVM bin directory
+    GRAALVM_BIN=/home/<user>/Oracle/graal/sdk/mxbuild/linux-amd64/GRAALVM_181A492ACC_JAVA25/graalvm-181a492acc-java25-25.1.0-dev/bin
+
+    # Override JAVA_HOME (optional)
+    JAVA_HOME_OVERRIDE=/usr/lib/jvm/java-25-openjdk
+    ```
+
+### Steps Performed
+1. **Compile with Maven**
+
+   Runs `mvn clean package` with GraalVM native access enabled.
+2. **Generate JavaScript bundle**
+
+   Uses GraalVM `web-image` to generate a JavaScript bundle (`app.js`) from the compiled JAR.
+3. **Copy Artifacts**
+
+   Places the generated JavaScript bundle (`app.js`) into the `html-demo/` directory.
+
+#### Example Usage
+```bash
+# Using command-line arguments
+./build.sh /path/to/graalvm/bin /usr/lib/jvm/java-25-openjdk
+
+# Using build.config
+./build.sh
+```
+
+After completion, the generated bundle will be available in:
+
+```bash
+html-demo/
+```
 
 ---
 

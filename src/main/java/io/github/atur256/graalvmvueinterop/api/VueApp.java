@@ -54,26 +54,26 @@ public class VueApp {
         return mountInternal(app);
     }
 
-    /**
-     * Unmounts the Vue application.
-     */
     @JS.Coerce
     @JS("self.unmount('#app')")
     private native void unmountInternal(JSObject self);
 
+    /**
+     * Unmounts the Vue application.
+     */
     public void unmount() {
         unmountInternal(app);
     }
+
+    @JS.Coerce
+    @JS("self.onUnmount(callback)")
+    private native void onUnmountInternal(JSObject self, JSFunction callback);
 
     /**
      * Registers a callback to run when the app is unmounted.
      *
      * @param callback a {@link JSFunction} to run on unmount
      */
-    @JS.Coerce
-    @JS("self.onUnmount(callback)")
-    private native void onUnmountInternal(JSObject self, JSFunction callback);
-
     public void onUnmount(JSFunction callback) {
         onUnmountInternal(app, callback);
     }

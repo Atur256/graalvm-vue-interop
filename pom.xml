@@ -7,7 +7,7 @@
 
     <groupId>io.github.atur256.graalvmvueinterop</groupId>
     <artifactId>graalvm-vue-interop</artifactId>
-    <version>1.0.0</version>
+    <version>0.0.1</version>
     <packaging>jar</packaging>
 
     <name>graalvm-vue-interop</name>
@@ -37,18 +37,19 @@
         <url>https://github.com/Atur256/graalvm-vue-interop</url>
     </scm>
 
-    <properties> <!-- TODO: check this -->
-        <maven.compiler.source>22</maven.compiler.source>
-        <maven.compiler.target>22</maven.compiler.target>
+    <properties>
+        <java.version>25</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
         <!-- WebImage Interop Dependency (local or replace when published) -->
         <dependency>  <!-- TODO: replace this -->
-            <groupId>com.oracle.graalvmwebimageinterop</groupId>
+            <groupId>io.github.atur256.graalvmwebimageinterop</groupId>
             <artifactId>graalvm-webimage-interop</artifactId>
-            <version>1.0.0</version>
+            <version>0.0.1</version>
         </dependency>
     </dependencies>
 
@@ -60,8 +61,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <source>22</source>
-                    <target>22</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                     <compilerArgs>
                         <arg>-parameters</arg>
                     </compilerArgs>
