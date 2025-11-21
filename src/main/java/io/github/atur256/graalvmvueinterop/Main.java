@@ -17,6 +17,7 @@
 package io.github.atur256.graalvmvueinterop;
 
 import io.github.atur256.graalvmvueinterop.examples.basics.helloworld.HelloWorldExample;
+import io.github.atur256.graalvmvueinterop.test.examples.counter.CounterExample;
 
 
 /**
@@ -30,6 +31,6 @@ public class Main {
     public static void main(String[] args) {
 
         // Run a specific example
-        HelloWorldExample.main(args);
+        CounterExample.main(args);
     }
 }

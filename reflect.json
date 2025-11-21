@@ -1,0 +1,15 @@
+[
+  {
+    "name" : "io.github.atur256.graalvmvueinterop.test.examples.counter.RootComponent",
+    "queryAllDeclaredConstructors" : true,
+    "queryAllPublicConstructors" : true,
+    "queryAllDeclaredMethods" : true,
+    "queryAllPublicMethods" : true,
+    "queryAllDeclaredFields" : true,
+    "queryAllPublicFields" : true,
+    "allDeclaredClasses" : true,
+    "allPublicClasses" : true,
+    "allPublicMethods" : true,
+    "allPublicFields" : true
+  }
+]
