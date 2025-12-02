@@ -93,7 +93,7 @@ public class RootComponent extends Component {
         public JSObject nextId = Vue.ref(3);
 
         // Adds a new item to the shopping list
-        public JSFunction addItem = JSFunction.fromRun(() -> {
+        public JSFunction addItem = JSFunction.of(() -> {
             String itemText = JSValue.checkedCoerce(newItemText.get("value"), String.class);
             if(itemText == null || itemText.trim().isEmpty()) return;
 
@@ -108,7 +108,7 @@ public class RootComponent extends Component {
         });
 
         // Remove an item from the shopping list
-        public JSFunction removeItem = JSFunction.fromCons((JSNumber idVal) -> {
+        public JSFunction removeItem = JSFunction.of((JSNumber idVal) -> {
             int id = idVal.asInt();
             JSArray list = JSValue.checkedCoerce(shoppingList.get("value"), JSArray.class);
 

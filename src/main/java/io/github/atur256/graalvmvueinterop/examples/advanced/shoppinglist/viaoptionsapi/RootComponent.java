@@ -23,6 +23,7 @@ import org.graalvm.webimage.api.JSNumber;
 import org.graalvm.webimage.api.JSObject;
 import org.graalvm.webimage.api.JSString;
 
+
 /**
  * RootComponent is the root Vue component for this GraalVM-based shopping list example.
  * <p>
@@ -38,19 +39,19 @@ public class RootComponent extends Component {
     public RootComponent() {
         // Vue template: input field, add button, and dynamic list of <list-item> components
         this.template = JSString.of("""
-            <div class="app">
-                <h1>Grocery List</h1>
-                <input v-model="newItemText">
-                <button @click="addItem">Add Item</button>
-                <list-item
-                  v-for="(item, index) in shoppingList"
-                  :item="item"
-                  :index="index"
-                  :key="item.id"
-                  @remove="removeItem">
-                </list-item>
-            </div>
-        """);
+                    <div class="app">
+                        <h1>Grocery List</h1>
+                        <input v-model="newItemText">
+                        <button @click="addItem">Add Item</button>
+                        <list-item
+                          v-for="(item, index) in shoppingList"
+                          :item="item"
+                          :index="index"
+                          :key="item.id"
+                          @remove="removeItem">
+                        </list-item>
+                    </div>
+                """);
 
         // Bind Vue methods
         this.methods = new Methods();
@@ -75,6 +76,7 @@ public class RootComponent extends Component {
      * Reactive state model for the shopping list component.
      */
     private static class Data extends JSObject {
+
         public JSArray shoppingList = createShoppingList();
         public JSString newItemText = JSString.of("");
         public JSNumber nextId = JSNumber.of(3);
@@ -88,33 +90,34 @@ public class RootComponent extends Component {
         // Adds a new item to the shopping list
         // Note: must be written entirely in JS due to a bug with GraalVM and Vue — `this` does not get passed correctly.
         public JSFunction addItem = JSFunction.fromBody("""
-            const itemText = this.newItemText.trim();
-            if (!itemText) return;
-
-            const newItem = {
-              id: this.nextId,
-              text: itemText
-            };
-
-            this.shoppingList.push(newItem);
-            this.newItemText = '';
-            this.nextId++;
-        """);
+                    const itemText = this.newItemText.trim();
+                    if (!itemText) return;
+                
+                    const newItem = {
+                      id: this.nextId,
+                      text: itemText
+                    };
+                
+                    this.shoppingList.push(newItem);
+                    this.newItemText = '';
+                    this.nextId++;
+                """);
 
         // Removes an item from the shopping list by ID
         // Note: must be written entirely in JS due to a bug with GraalVM and Vue — `this` does not get passed correctly.
-        public JSFunction removeItem = JSFunction.fromArgs("id", """
-            const index = this.shoppingList.findIndex(item => item.id === id);
-            if (index !== -1) {
-              this.shoppingList.splice(index, 1);
-            }
-        """);
+        public JSFunction removeItem = JSFunction.fromArgs(new String[]{"id"}, """
+                    const index = this.shoppingList.findIndex(item => item.id === id);
+                    if (index !== -1) {
+                      this.shoppingList.splice(index, 1);
+                    }
+                """);
     }
 
     /**
      * Registers child components used in the template.
      */
     private static class Components extends JSObject {
+
         public Component listItem = new ShoppingListComponent();
     }
 
@@ -132,7 +135,7 @@ public class RootComponent extends Component {
     /**
      * Creates a single shopping list item.
      *
-     * @param id unique identifier
+     * @param id   unique identifier
      * @param text item description
      * @return a {@link JSObject} representing the item
      */

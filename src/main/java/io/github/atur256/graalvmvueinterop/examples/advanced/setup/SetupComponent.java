@@ -75,15 +75,15 @@ public class SetupComponent extends Component {
         public JSObject count = Vue.ref(0);
 
         // Method to increment count
-        public JSFunction increment = JSFunction.fromRun(() ->
+        public JSFunction increment = JSFunction.of(() ->
                 count.set("value", JSValue.checkedCoerce(count.get("value"), Integer.class) + 1));
 
         // Reactive effect: runs whenever any reactive dependency used inside changes
-        public JSObject watchEffect = Vue.watchEffect(JSFunction.fromRun(() ->
+        public JSObject watchEffect = Vue.watchEffect(JSFunction.of(() ->
                 System.out.println("[WatchEffect] count changed to: " + JSValue.checkedCoerce(count.get("value"), Integer.class))));
 
         // Watcher: runs only when 'count' changes
-        public JSObject watch = Vue.watch(count, JSFunction.fromRun(() ->
+        public JSObject watch = Vue.watch(count, JSFunction.of(() ->
                 System.out.println("[watch] count changed to: " + JSValue.checkedCoerce(count.get("value"), Integer.class))));
     }
 }

@@ -61,7 +61,7 @@ public class GlobalComponentPluginExample {
      */
     private static class Plugin extends JSObject {
 
-        public JSFunction install = JSFunction.fromCons((JSObject app) -> {
+        public JSFunction install = JSFunction.of((JSObject app) -> {
             JSObject config = JSValue.checkedCoerce(app.get("config"), JSObject.class);
             JSObject globalProperties = JSValue.checkedCoerce(config.get("globalProperties"), JSObject.class);
             globalProperties.set("globalMessage", "Hello from plugin!");

@@ -53,7 +53,7 @@ public class MixinComponent extends Component {
         this.mixins = JSArray.of(new SharedCountMixin(), new ExtraCountMixin());
 
         // Component-level lifecycle hook
-        this.created = JSFunction.fromRun(() ->
+        this.created = JSFunction.of(() ->
                 System.out.println("[Component] Component created!")
         );
     }
@@ -78,7 +78,7 @@ public class MixinComponent extends Component {
     public static class SharedCountMixin extends JSObject {
 
         // Reactive state injected by the mixin
-        public JSFunction data = JSFunction.fromSupp(() -> new JSObject() {
+        public JSFunction data = JSFunction.of(() -> new JSObject() {
             public JSNumber sharedCount = JSNumber.of(0);
         });
 
@@ -89,7 +89,7 @@ public class MixinComponent extends Component {
         };
 
         // Lifecycle hook triggered when component is created
-        public JSFunction created = JSFunction.fromRun(() ->
+        public JSFunction created = JSFunction.of(() ->
                 System.out.println("[Mixin] SharedCountMixin created!")
         );
     }
@@ -100,7 +100,7 @@ public class MixinComponent extends Component {
     public static class ExtraCountMixin extends JSObject {
 
         // Reactive state injected by the mixin
-        public JSFunction data = JSFunction.fromSupp(() -> new JSObject() {
+        public JSFunction data = JSFunction.of(() -> new JSObject() {
             public JSNumber extraCount = JSNumber.of(5);
         });
 
@@ -110,7 +110,7 @@ public class MixinComponent extends Component {
         };
 
         // Lifecycle hook triggered when component is created
-        public JSFunction created = JSFunction.fromRun(() ->
+        public JSFunction created = JSFunction.of(() ->
                 System.out.println("[Mixin] ExtraCountMixin created!")
         );
     }

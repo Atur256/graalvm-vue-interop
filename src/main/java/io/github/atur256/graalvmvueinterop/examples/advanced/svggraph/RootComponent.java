@@ -25,6 +25,7 @@ import org.graalvm.webimage.api.JSObject;
 import org.graalvm.webimage.api.JSString;
 import org.graalvm.webimage.api.JSValue;
 
+
 /**
  * RootComponent is the root Vue component for this GraalVM-based SVG graph example.
  * <p>
@@ -40,23 +41,23 @@ public class RootComponent extends Component {
     public RootComponent() {
         // Vue template: SVG graph plus interactive controls
         this.template = JSString.of("""
-            <div id="app">
-                <svg width="200" height="200">
-                    <poly-graph :stats="stats"></poly-graph>
-                </svg>
-                <div v-for="stat in stats">
-                    <label>{{stat.label}}</label>
-                    <input type="range" v-model="stat.value" min="0" max="100">
-                    <span>{{stat.value}}</span>
-                    <button @click="remove(stat)" class="remove">X</button>
-                </div>
-                <form id="add">
-                    <input name="newlabel" v-model="newLabel">
-                    <button @click="add">Add a Stat</button>
-                </form>
-                <pre id="raw">{{ stats }}</pre>
-            </div>
-        """);
+                    <div id="app">
+                        <svg width="200" height="200">
+                            <poly-graph :stats="stats"></poly-graph>
+                        </svg>
+                        <div v-for="stat in stats">
+                            <label>{{stat.label}}</label>
+                            <input type="range" v-model="stat.value" min="0" max="100">
+                            <span>{{stat.value}}</span>
+                            <button @click="remove(stat)" class="remove">X</button>
+                        </div>
+                        <form id="add">
+                            <input name="newlabel" v-model="newLabel">
+                            <button @click="add">Add a Stat</button>
+                        </form>
+                        <pre id="raw">{{ stats }}</pre>
+                    </div>
+                """);
 
         // Register child components
         this.components = new Components();
@@ -93,12 +94,12 @@ public class RootComponent extends Component {
         public JSObject stats = Vue.ref(initialiseStatArray());
 
         // Adds a new stat to the graph
-        public JSFunction add = JSFunction.fromCons((JSObject e) -> {
+        public JSFunction add = JSFunction.of((JSObject e) -> {
             try {
-                JSFunction.fromArgs("obj", "obj.preventDefault();").invoke(e);
+                JSFunction.fromArgs(new String[]{"obj"}, "obj.preventDefault();").invoke(e);
 
                 String newText = JSValue.checkedCoerce(newLabel.get("value"), String.class);
-                if (newText.isEmpty()) return;
+                if(newText.isEmpty()) return;
 
                 JSArray arr = JSValue.checkedCoerce(stats.get("value"), JSArray.class);
                 arr.push(createItem(newText));
@@ -111,11 +112,12 @@ public class RootComponent extends Component {
         });
 
         // Removes a stat from the graph (minimum of 3 stats required)
-        public JSFunction remove = JSFunction.fromCons((JSObject stat) -> {
+        public JSFunction remove = JSFunction.of((JSObject stat) -> {
             JSArray arr = JSValue.checkedCoerce(stats.get("value"), JSArray.class);
-            if (arr.length > 3) {
+            if(arr.length > 3) {
                 arr.splice(arr.indexOf(stat), 1);
-            } else {
+            }
+            else {
                 System.err.println("Can't delete more!");
             }
         });
@@ -125,6 +127,7 @@ public class RootComponent extends Component {
      * Registers child components used in the template, including {@code <poly-graph>}.
      */
     private static class Components extends JSObject {
+
         public Component polyGraph = new PolyGraph();
     }
 

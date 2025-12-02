@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.atur256.graalvmvueinterop</groupId>
+    <groupId>io.github.atur256.graalvm-vue-interop</groupId>
     <artifactId>graalvm-vue-interop</artifactId>
     <version>0.0.1</version>
     <packaging>jar</packaging>
@@ -26,12 +27,12 @@
         <developer>
             <id>atur256</id>
             <name>Arthur Schwaiger</name>
-            <email>- </email> <!-- TODO: replace this -->
+            <email>-</email>
             <url>https://github.com/atur256</url>
         </developer>
     </developers>
 
-    <scm> <!-- TODO: check this -->
+    <scm>
         <connection>scm:git:https://github.com/Atur256/graalvm-vue-interop.git</connection>
         <developerConnection>scm:git:https://github.com/Atur256/graalvm-vue-interop.git</developerConnection>
         <url>https://github.com/Atur256/graalvm-vue-interop</url>
@@ -42,19 +43,84 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <graalvm.version>25.3.0</graalvm.version>
+        <main.class>io.github.atur256.graalvmvueinterop.Main</main.class>
     </properties>
 
     <dependencies>
-        <!-- WebImage Interop Dependency (local or replace when published) -->
-        <dependency>  <!-- TODO: replace this -->
+        <!-- WebImage Interop Dependency -->
+        <dependency>
             <groupId>io.github.atur256.graalvmwebimageinterop</groupId>
             <artifactId>graalvm-webimage-interop</artifactId>
             <version>0.0.1</version>
+        </dependency>
+
+        <!-- JetBrains annotations -->
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>24.0.1</version>
+        </dependency>
+
+        <!-- JUnit 5 for tests -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>6.1.0-M1</version>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
+
+            <!-- Maven Antrun plugin -->
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>mkdir-js-dir</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <target>
+                                <mkdir dir="${project.build.directory}/js"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- GraalVM Native Plugin -->
+            <plugin>
+                <groupId>org.graalvm.buildtools</groupId>
+                <artifactId>native-maven-plugin</artifactId>
+                <version>0.11.3</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>build-native</id>
+                        <goals>
+                            <goal>compile-no-fork</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>${main.class}</mainClass>
+                    <buildArgs>
+                        <option>--tool:svm-wasm</option>
+                        <option>-Dcom.oracle.graalvm.iswebimage=true</option>
+                        <option>-H:+UnlockExperimentalVMOptions</option>
+                        <option>-o</option>
+                        <option>${project.build.directory}/js/app</option>
+                        <option>-H:-ClosureCompiler</option>
+                    </buildArgs>
+                </configuration>
+            </plugin>
+
             <!-- Compiler plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -69,7 +135,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Surefire plugin for running tests -->
+            <!-- Surefire plugin for tests -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -80,7 +146,7 @@
             </plugin>
 
             <!-- Source JAR -->
-            <plugin> <!-- TODO: check this -->
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>3.2.1</version>
@@ -96,7 +162,7 @@
             </plugin>
 
             <!-- Javadoc JAR -->
-            <plugin> <!-- TODO: check this -->
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.5.0</version>
@@ -112,7 +178,7 @@
             </plugin>
 
             <!-- GPG signing -->
-            <plugin> <!-- TODO: replace this -->
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
                 <version>3.1.0</version>
@@ -141,18 +207,21 @@
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>io.github.atur256.graalvmvueinterop.Main</mainClass>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>${main.class}</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+
+
         </plugins>
     </build>
 
-    <distributionManagement> <!-- TODO: check this -->
+    <distributionManagement>
         <repository>
             <id>ossrh</id>
             <name>OSSRH Repository</name>
@@ -164,4 +233,5 @@
             <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
+
 </project>

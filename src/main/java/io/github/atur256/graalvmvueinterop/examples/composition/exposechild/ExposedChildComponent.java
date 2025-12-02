@@ -57,7 +57,7 @@ public class ExposedChildComponent extends Component {
         /**
          * Logs a message to the console.
          */
-        public JSFunction sayHello = JSFunction.fromRun(() -> System.out.println("Hello from child!"));
+        public JSFunction sayHello = JSFunction.of(() -> System.out.println("Hello from child!"));
     }
 
     /**

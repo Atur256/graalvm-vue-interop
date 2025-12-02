@@ -62,7 +62,7 @@ public class ParentComponent extends Component {
         JSObject countRef = Vue.ref(0);
 
         // data() is defined via constructor to allow passing the shared count ref
-        this.data = JSFunction.fromSupp(() -> new Data(countRef));
+        this.data = JSFunction.of(() -> new Data(countRef));
 
         // Vue method bindings for template actions
         this.methods = new Methods();
@@ -97,7 +97,7 @@ public class ParentComponent extends Component {
          * Increments the reactive count value.
          * Note: count is a Vue ref, so we access and mutate its .value field.
          */
-        public JSFunction increment = JSFunction.fromThisCons((JSObject data) -> {
+        public JSFunction increment = JSFunction.withThis((JSObject data) -> {
             int current = JSValue.checkedCoerce(data.get("count"), Integer.class);
             data.set("count", JSNumber.of(current + 1));
         });
@@ -113,7 +113,7 @@ public class ParentComponent extends Component {
         /**
          * Updates grandMessage with the value received from the child event.
          */
-        public JSFunction handleChildEvent = JSFunction.fromConsWithThis((JSObject data, JSString messageVal) -> {
+        public JSFunction handleChildEvent = JSFunction.withThis((JSObject data, JSString messageVal) -> {
             String msg = messageVal.asString();
             data.set("grandMessage", msg);
             System.out.println("[Parent] Received message from child: " + msg);
@@ -133,7 +133,7 @@ public class ParentComponent extends Component {
      */
     private static class Computed extends JSObject {
 
-        public JSFunction doubledCount = JSFunction.fromFunc((JSObject thisObj) -> {
+        public JSFunction doubledCount = JSFunction.of((JSObject thisObj) -> {
             int count = JSValue.checkedCoerce(thisObj.get("count"), Integer.class);
             return JSNumber.of(count * 2);
         });

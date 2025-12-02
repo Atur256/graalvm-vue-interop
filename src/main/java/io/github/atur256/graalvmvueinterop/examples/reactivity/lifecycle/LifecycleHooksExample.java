@@ -49,6 +49,6 @@ public class LifecycleHooksExample {
         app.mount();
 
         // Register a JS-side unmount hook
-        app.onUnmount(JSFunction.fromRun(() -> System.out.println("Vue Application unmounted!")));
+        app.onUnmount(JSFunction.of(() -> System.out.println("Vue Application unmounted!")));
     }
 }

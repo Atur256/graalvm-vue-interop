@@ -86,16 +86,15 @@ public class RootComponent extends Component {
     private static class Methods extends JSObject {
 
         // Increments the counter by 1
-        public JSFunction increment = JSFunction.fromThisCons((JSObject data) -> {
+        public JSFunction increment = JSFunction.withThis((JSObject data) -> {
             int current = JSValue.checkedCoerce(data.get("count"), Integer.class);
-            data.set("count", current + 1);
+            data.set("count", JSNumber.of(current + 1));
         });
 
         // Decrements the counter by 1
-        public JSFunction decrement = JSFunction.fromThisCons((JSObject data) -> {
+        public JSFunction decrement = JSFunction.withThis((JSObject data) -> {
             int current = JSValue.checkedCoerce(data.get("count"), Integer.class);
-            int decremented = current - 1;
-            data.set("count", JSNumber.of(decremented));
+            data.set("count", JSNumber.of(current - 1));
         });
     }
 
@@ -110,7 +109,7 @@ public class RootComponent extends Component {
     private static class Computed extends JSObject {
 
         // Computes status label based on count value
-        public JSFunction status = JSFunction.fromThisFunc((JSObject data) -> {
+        public JSFunction status = JSFunction.of((JSObject data) -> {
             int value = JSValue.checkedCoerce(data.get("count"), Integer.class);
             return JSString.of(value > 4 ? "High" : (value < 0 ? "Minus" : "Low"));
         });

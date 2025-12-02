@@ -66,15 +66,15 @@ public class DirectiveComponent extends Component {
          * Auto-focuses the bound element when the component is mounted.
          */
         public JSObject focus = new JSObject() {
-            public JSFunction mounted = JSFunction.fromCons(DirectiveComponent::focus);
+            public JSFunction mounted = JSFunction.of(DirectiveComponent::focus);
         };
 
         /**
          * Applies dynamic font color based on directive binding value.
          */
         public JSObject color = new JSObject() {
-            public JSFunction mounted = JSFunction.fromBiCons(DirectiveComponent::bindColor);
-            public JSFunction updated = JSFunction.fromBiCons(DirectiveComponent::bindColor);
+            public JSFunction mounted = JSFunction.of(DirectiveComponent::bindColor);
+            public JSFunction updated = JSFunction.of(DirectiveComponent::bindColor);
         };
     }
 

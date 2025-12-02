@@ -95,14 +95,14 @@ public class RootComponent extends Component {
     private static class Watchers extends JSObject {
 
         // Watcher for primitive field: count
-        public JSFunction count = JSFunction.fromBiCons((Object newVal, Object oldVal) -> {
+        public JSFunction count = JSFunction.of((Object newVal, Object oldVal) -> {
             int newCount = JSValue.checkedCoerce(newVal, Integer.class);
             int oldCount = JSValue.checkedCoerce(oldVal, Integer.class);
             System.out.println("[watch] Count changed from " + oldCount + " to " + newCount);
         });
 
         // Watcher for primitive field: status
-        public JSFunction status = JSFunction.fromBiCons((Object newVal, Object oldVal) -> {
+        public JSFunction status = JSFunction.of((Object newVal, Object oldVal) -> {
             String newStatus = JSValue.checkedCoerce(newVal, String.class);
             String oldStatus = JSValue.checkedCoerce(oldVal, String.class);
             System.out.println("[watch] Status changed from '" + oldStatus + "' to '" + newStatus + "'");
@@ -117,7 +117,7 @@ public class RootComponent extends Component {
              *   the proxy structure, which can lead to stack overflow or "too much recursion" errors.
              * - Using an inline JSObject avoids that issue and keeps the watcher safe.
              */
-            set("handler", JSFunction.fromCons((JSObject user) -> {
+            set("handler", JSFunction.of((JSObject user) -> {
                 JSObject profile = (JSObject) user.get("profile");
                 String name = JSValue.checkedCoerce(profile.get("name"), String.class);
                 System.out.println("[watch] user.profile.name changed to '" + name + "'");
@@ -132,20 +132,20 @@ public class RootComponent extends Component {
     private static class Methods extends JSObject {
 
         // Increments the count value
-        public JSFunction increment = JSFunction.fromThisCons((JSObject data) -> {
+        public JSFunction increment = JSFunction.withThis((JSObject data) -> {
             int current = JSValue.checkedCoerce(data.get("count"), Integer.class);
             data.set("count", current + 1);
         });
 
         // Toggles the status between "idle" and "active"
-        public JSFunction toggleStatus = JSFunction.fromThisCons((JSObject data) -> {
+        public JSFunction toggleStatus = JSFunction.withThis((JSObject data) -> {
             String current = JSValue.checkedCoerce(data.get("status"), String.class);
             String next = current.equals("idle") ? "active" : "idle";
             data.set("status", next);
         });
 
         // Toggles the profile name between "Alice" and "Bob"
-        public JSFunction toggleProfileName = JSFunction.fromThisCons((JSObject data) -> {
+        public JSFunction toggleProfileName = JSFunction.withThis((JSObject data) -> {
             JSObject user = (JSObject) data.get("user");
             JSObject profile = (JSObject) user.get("profile");
             String current = JSValue.checkedCoerce(profile.get("name"), String.class);
@@ -160,7 +160,7 @@ public class RootComponent extends Component {
     private static class Computed extends JSObject {
 
         // Returns a greeting message based on the current profile name
-        public JSFunction greeting = JSFunction.fromThisFunc((JSObject data) -> {
+        public JSFunction greeting = JSFunction.withThis((JSObject data) -> {
             JSObject user = (JSObject) data.get("user");
             JSObject profile = (JSObject) user.get("profile");
             String name = JSValue.checkedCoerce(profile.get("name"), String.class);

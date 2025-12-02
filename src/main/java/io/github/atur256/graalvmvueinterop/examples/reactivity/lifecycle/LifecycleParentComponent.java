@@ -88,7 +88,7 @@ public class LifecycleParentComponent extends Component {
         public JSFunction unmountApp;
 
         public Methods(LifecycleParentComponent this_) {
-            unmountApp = JSFunction.fromRun(() -> {
+            unmountApp = JSFunction.of(() -> {
                 if(this_.app != null) this_.app.unmount();
             });
         }

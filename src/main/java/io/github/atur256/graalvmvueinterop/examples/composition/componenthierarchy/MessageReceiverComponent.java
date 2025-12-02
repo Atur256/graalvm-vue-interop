@@ -77,7 +77,7 @@ public class MessageReceiverComponent extends Component {
          * - Must be written entirely in JS due to a bug with GraalVM and Vue — `this` does not get passed correctly.
          * - The `event` parameter is explicitly declared to avoid `$event` scoping issues.
          */
-        public JSFunction forwardMessageToParent = JSFunction.fromArgs("event", "console.log(event); this.$emit('childEvent', event);");
+        public JSFunction forwardMessageToParent = JSFunction.fromArgs(new String[]{"event"}, "console.log(event); this.$emit('childEvent', event);");
 
         /**
          * Decrements the injected count value.
