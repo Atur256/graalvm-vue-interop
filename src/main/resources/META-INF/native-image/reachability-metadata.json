@@ -1,7 +1,7 @@
 {
   "reflection": [
     {
-      "type": "io.github.atur256.graalvmvueinterop.test.examples.counter.RootComponent",
+      "type": "io.github.atur256.graalvmvueinterop.apiwithreflection.examples.counter.RootComponent",
       "queryAllDeclaredConstructors": true,
       "queryAllPublicConstructors": true,
       "queryAllDeclaredMethods": true,

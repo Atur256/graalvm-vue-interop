@@ -99,7 +99,7 @@ public abstract class ComponentWithReflection extends JSObject {
         boolean hasReturn = !method.getReturnType().equals(void.class);
 
         if(paramCount == 0 && hasReturn) {
-            f = JSFunction.of((Object data) -> {
+            f = JSFunction.withThis((Object data) -> {
                 try {
                     return method.invoke(this, data);
                 } catch (IllegalAccessException | InvocationTargetException e) {
@@ -108,7 +108,7 @@ public abstract class ComponentWithReflection extends JSObject {
             });
         }
         else if(paramCount == 0) {
-            f = JSFunction.of((Object data) -> {
+            f = JSFunction.withThis((Object data) -> {
                 try {
                     method.invoke(this, data);
                 } catch (IllegalAccessException | InvocationTargetException e) {
@@ -117,7 +117,7 @@ public abstract class ComponentWithReflection extends JSObject {
             });
         }
         else if(paramCount == 1 && hasReturn) {
-            f = JSFunction.of((Object data, Object arg) -> {
+            f = JSFunction.withThis((Object data, Object arg) -> {
                 try {
                     return method.invoke(this, data, arg);
                 } catch (IllegalAccessException | InvocationTargetException e) {
@@ -126,7 +126,7 @@ public abstract class ComponentWithReflection extends JSObject {
             });
         }
         else if(paramCount == 1) {
-            f = JSFunction.of((Object data, Object arg) -> {
+            f = JSFunction.withThis((Object data, Object arg) -> {
                 try {
                     method.invoke(this, data, arg);
                 } catch (IllegalAccessException | InvocationTargetException e) {
@@ -135,7 +135,7 @@ public abstract class ComponentWithReflection extends JSObject {
             });
         }
         else if(paramCount == 2 && hasReturn) {
-            f = JSFunction.of((Object data, Object arg1, Object arg2) -> {
+            f = JSFunction.withThis((Object data, Object arg1, Object arg2) -> {
                 try {
                     return method.invoke(this, data, arg1, arg2);
                 } catch (IllegalAccessException | InvocationTargetException e) {
@@ -144,7 +144,7 @@ public abstract class ComponentWithReflection extends JSObject {
             });
         }
         else if(paramCount == 2) {
-            f = JSFunction.of((Object data, Object arg1, Object arg2) -> {
+            f = JSFunction.withThis((Object data, Object arg1, Object arg2) -> {
                 try {
                     method.invoke(this, data, arg1, arg2);
                 } catch (IllegalAccessException | InvocationTargetException e) {
