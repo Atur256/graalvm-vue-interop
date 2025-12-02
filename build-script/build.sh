@@ -35,10 +35,14 @@ MAVEN_OPTS="--enable-native-access=ALL-UNNAMED" mvn clean package
 
 ## === STEP 2: Run web-image build ===
 echo "Running web-image from $GRAALVM_BIN..."
-"$GRAALVM_BIN/web-image" \
-  -H:+UnlockExperimentalVMOptions \
-  -H:ReflectionConfigurationFiles=/home/arthur/Oracle/Java/vue-webimage-interop/reflect.json \
-  -o "$CUSTOM_OUTPUT/app" \
-  -Ob -cp "$MAIN_JAR" "$MAIN_CLASS"
+  "$GRAALVM_BIN/native-image" \
+    -Dcom.oracle.graalvm.iswebimage=true \
+    --tool:svm-wasm \
+    --exact-reachability-metadata \
+    -H:+UnlockExperimentalVMOptions \
+    -H:ReflectionConfigurationFiles=/home/arthur/Oracle/Java/vue-webimage-interop/reflect.json \
+    -o "$CUSTOM_OUTPUT/app" \
+    -H:-ClosureCompiler \
+    -Ob -cp "$MAIN_JAR" "$MAIN_CLASS"
 
 echo "Build complete. Output is ready in: $CUSTOM_OUTPUT"

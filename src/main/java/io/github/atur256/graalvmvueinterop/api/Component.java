@@ -90,7 +90,7 @@ public abstract class Component extends JSObject {
      * Vue data function, returning the reactive state for this component.
      * Bound as a supplier to match Vue's {@code data: () => ({ ... })} pattern.
      */
-    protected JSObject data = JSFunction.fromSupp(this::data);
+    protected JSObject data = JSFunction.of(this::data);
 
     /**
      * Returns the reactive state for this component.
@@ -124,7 +124,7 @@ public abstract class Component extends JSObject {
      * Allows defining reactive state, methods, and computed properties using {@code Vue.ref()}, {@code Vue.reactive()}, etc.
      * Returned bindings are exposed to the template and component context.
      */
-    protected JSObject setup = JSFunction.fromSupp(this::setup);
+    protected JSObject setup = JSFunction.of(this::setup);
 
     /**
      * Returns Composition API bindings for this component.
