@@ -1,4 +1,4 @@
-package io.github.atur256.graalvmvueinterop.test;
+package io.github.atur256.graalvmvueinterop.apiwithreflection;
 
 import io.github.atur256.graalvmvueinterop.api.VueApp;
 import org.graalvm.webimage.api.JS;
@@ -9,39 +9,44 @@ import java.lang.annotation.RetentionPolicy;
 
 
 @JS.Import("Vue")
-public class Vue {
+public class VueWithReflection {
 
-    private Vue() {
+    private VueWithReflection() {
     }
 
     @JS.Coerce
     @JS("return Vue.createApp(component);")
-    private static native JSObject createAppRaw(ComponentTest component);
+    private static native JSObject createAppRaw(ComponentWithReflection component);
 
     @JS.Coerce
     @JS("return Vue.createApp(component, config);")
-    private static native JSObject createAppRaw(ComponentTest component, JSObject config);
+    private static native JSObject createAppRaw(ComponentWithReflection component, JSObject config);
 
     @JS.Coerce
     @JS("return Vue.createApp(component);")
     private static native JSObject createAppRaw(JSObject component);
 
-    public static VueApp createApp(ComponentTest component) {
+    public static VueApp createApp(ComponentWithReflection component) {
         return new VueApp(createAppRaw(component));
     }
 
     @Retention(RetentionPolicy.RUNTIME)
     public @interface Template {
+
     }
 
     @Retention(RetentionPolicy.RUNTIME)
     public @interface Method {
+
     }
 
     @Retention(RetentionPolicy.RUNTIME)
-    public @interface Data {}
+    public @interface Data {
+
+    }
 
     @Retention(RetentionPolicy.RUNTIME)
     public @interface Computed {
+
     }
 }

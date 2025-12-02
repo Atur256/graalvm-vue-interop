@@ -1,22 +1,23 @@
-package io.github.atur256.graalvmvueinterop.test;
+package io.github.atur256.graalvmvueinterop.apiwithreflection;
 
 import io.github.atur256.graalvmwebimageinterop.builtin.JSFunction;
-import org.graalvm.webimage.api.*;
+import org.graalvm.webimage.api.JSObject;
+import org.graalvm.webimage.api.JSString;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
 // TODO: reflection could be replaced by a compiler feature (possible idea)
-public abstract class ComponentTest extends JSObject {
+public abstract class ComponentWithReflection extends JSObject {
 
     public JSString template = null;
 
-    public JSObject data() {
-        return JSObject.create();
-    }
+//    public JSObject data() {
+//        return JSObject.create();
+//    }
 
-    protected JSObject data = JSFunction.fromSupp(this::data);
+    protected JSObject data = JSFunction.of(this::createData);
 
     public JSObject methods = methods();
 
@@ -24,7 +25,7 @@ public abstract class ComponentTest extends JSObject {
 
     protected JSString template() {
         return Arrays.stream(this.getClass().getDeclaredFields())
-                .filter(field -> field.getAnnotation(Vue.Template.class) != null)
+                .filter(field -> field.getAnnotation(VueWithReflection.Template.class) != null)
                 .peek(field -> System.out.println("Found Template data: " + field))
                 .findFirst()
                 .map(field -> {
@@ -41,7 +42,7 @@ public abstract class ComponentTest extends JSObject {
         JSObject ms = JSObject.create();
 
         Arrays.stream(this.getClass().getDeclaredMethods())
-                .filter(method -> method.getAnnotation(Vue.Method.class) != null)
+                .filter(method -> method.getAnnotation(VueWithReflection.Method.class) != null)
                 .forEach(method -> {
                     System.out.println("Found Vue method: " + method);
                     try {
@@ -57,14 +58,16 @@ public abstract class ComponentTest extends JSObject {
     protected JSObject createData() {
         JSObject d = JSObject.create();
 
-        Arrays.stream(this.getClass().getDeclaredFields())
-                .filter(field -> field.getAnnotation(Vue.Data.class) != null)
+        Arrays.stream(this.getClass().getDeclaredMethods())
+                .filter(field -> field.getAnnotation(VueWithReflection.Data.class) != null)
                 .forEach(field -> {
                     System.out.println("Found Vue data: " + field);
                     try {
-                        d.set(JSString.of(field.getName()), field.get(this));  // TODO: exception happens here at .get(this)
+                        d.set(JSString.of(field.getName()), field.invoke(this));  // TODO: exception happens here at .get(this)
                     } catch (IllegalAccessException e) {
                         throw new RuntimeException("Failed to access data field: " + field, e);
+                    } catch (InvocationTargetException e) {
+                        throw new RuntimeException(e);
                     }
                 });
 
@@ -75,7 +78,7 @@ public abstract class ComponentTest extends JSObject {
         JSObject co = JSObject.create();
 
         Arrays.stream(this.getClass().getDeclaredMethods())
-                .filter(method -> method.getAnnotation(Vue.Computed.class) != null)
+                .filter(method -> method.getAnnotation(VueWithReflection.Computed.class) != null)
                 .forEach(method -> {
                     System.out.println("Found Vue computed: " + method);
                     try {
@@ -96,7 +99,7 @@ public abstract class ComponentTest extends JSObject {
         boolean hasReturn = !method.getReturnType().equals(void.class);
 
         if(paramCount == 0 && hasReturn) {
-            f = JSFunction.fromThisFunc((Object data) -> {
+            f = JSFunction.of((Object data) -> {
                 try {
                     return method.invoke(this, data);
                 } catch (IllegalAccessException | InvocationTargetException e) {
@@ -105,7 +108,7 @@ public abstract class ComponentTest extends JSObject {
             });
         }
         else if(paramCount == 0) {
-            f = JSFunction.fromThisCons((Object data) -> {
+            f = JSFunction.of((Object data) -> {
                 try {
                     method.invoke(this, data);
                 } catch (IllegalAccessException | InvocationTargetException e) {
@@ -114,7 +117,7 @@ public abstract class ComponentTest extends JSObject {
             });
         }
         else if(paramCount == 1 && hasReturn) {
-            f = JSFunction.fromFuncWithThis((Object data, Object arg) -> {
+            f = JSFunction.of((Object data, Object arg) -> {
                 try {
                     return method.invoke(this, data, arg);
                 } catch (IllegalAccessException | InvocationTargetException e) {
@@ -123,7 +126,7 @@ public abstract class ComponentTest extends JSObject {
             });
         }
         else if(paramCount == 1) {
-            f = JSFunction.fromConsWithThis((Object data, Object arg) -> {
+            f = JSFunction.of((Object data, Object arg) -> {
                 try {
                     method.invoke(this, data, arg);
                 } catch (IllegalAccessException | InvocationTargetException e) {
@@ -132,7 +135,7 @@ public abstract class ComponentTest extends JSObject {
             });
         }
         else if(paramCount == 2 && hasReturn) {
-            f = JSFunction.fromBiFuncWithThis((Object data, Object arg1, Object arg2) -> {
+            f = JSFunction.of((Object data, Object arg1, Object arg2) -> {
                 try {
                     return method.invoke(this, data, arg1, arg2);
                 } catch (IllegalAccessException | InvocationTargetException e) {
@@ -141,7 +144,7 @@ public abstract class ComponentTest extends JSObject {
             });
         }
         else if(paramCount == 2) {
-            f = JSFunction.fromBiConsWithThis((Object data, Object arg1, Object arg2) -> {
+            f = JSFunction.of((Object data, Object arg1, Object arg2) -> {
                 try {
                     method.invoke(this, data, arg1, arg2);
                 } catch (IllegalAccessException | InvocationTargetException e) {
