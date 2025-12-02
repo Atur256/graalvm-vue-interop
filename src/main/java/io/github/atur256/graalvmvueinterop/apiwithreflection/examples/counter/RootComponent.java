@@ -58,12 +58,8 @@ public class RootComponent extends ComponentWithReflection {
 
     @VueWithReflection.Method
     public void increment(JSObject data) {
-        try {
-            int current = JSValue.checkedCoerce(data.get("count"), Integer.class);
-            data.set("count", JSNumber.of(current + 1));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        int current = JSValue.checkedCoerce(data.get("count"), Integer.class);
+        data.set("count", JSNumber.of(current + 1));
     }
 
     @VueWithReflection.Method
