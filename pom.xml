@@ -50,7 +50,7 @@
     <dependencies>
         <!-- WebImage Interop Dependency -->
         <dependency>
-            <groupId>io.github.atur256.graalvmwebimageinterop</groupId>
+            <groupId>io.github.atur256.graalvm-webimage-interop</groupId>
             <artifactId>graalvm-webimage-interop</artifactId>
             <version>0.0.1</version>
         </dependency>
