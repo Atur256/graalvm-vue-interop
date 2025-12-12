@@ -36,10 +36,6 @@ src/
 │ │ ├─ examples/            # Example Vue components written in Java
 │ │ └─ Main.java            # Entry point for generating JavaScript bundles
 └─ html-demo/               # Demo HTML and CSS files
-
-build-script/ 
-├─ build.sh                 # Build script for Maven + GraalVM WebImage 
-└─ build.config             # Optional configuration file
 ```
 ---
 
