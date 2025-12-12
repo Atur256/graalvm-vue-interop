@@ -1,6 +1,6 @@
 # GraalVM Vue Interop
 
-This library demonstrates how to define **Vue.js components in Java using the Vue Options API**, and how to generate executable JavaScript automatically using [GraalVM](https://www.graalvm.org/) with the [WebImage Interop Extension](https://github.com/Atur256/graalvm-webimage-interop).
+This library demonstrates how to define **Vue.js components in Java using the Vue Options API**, and how to generate executable JavaScript automatically using [GraalVM](https://www.graalvm.org/) with the [GraalVM WebImage Interop Extension](https://github.com/Atur256/graalvm-webimage-interop).
 
 It allows developers to write **Java-first Vue components**, supporting both the **Options API** and parts of the **Composition API** (`setup()`, `ref()`, `reactive()`) for reactive state and computed properties.
 
@@ -10,7 +10,7 @@ This repository forms part of a **bachelor’s thesis** exploring Java–JavaScr
 
 ## Dependency
 
-> **Important:** This project depends on the [WebImage Interop Extension](https://github.com/Atur256/graalvm-webimage-interop), which in turn relies on GraalVM.  
+> **Important:** This project depends on the [GraalVM WebImage Interop Extension](https://github.com/Atur256/graalvm-webimage-interop), which in turn relies on GraalVM.  
 > Ensure the extension is included in your project to enable Java-to-JavaScript interop and generate JavaScript bundles from Java-defined Vue components.
 
 ---
@@ -85,79 +85,44 @@ Represents a Vue application instance. Supports:
 
 ---
 
-## Examples & Build
+## Build & GraalVM Requirements
 
-### Examples
+This project depends on **GraalVM** with the [GraalVM WebImage Interop Extension](https://github.com/Atur256/graalvm-webimage-interop)
+Ensure GraalVM is installed and properly configured in your environment before attempting a build.
 
-The `examples/` directory contains demos showcasing:
+**Download the latest GraalVM snapshot release** from the [official GraalVM Early Access GitHub releases](https://github.com/graalvm/oracle-graalvm-ea-builds/releases/tag/jdk-25e1-25.0.1-ea.06).
 
-- **Basic apps:** counters, HelloWorld, simple Composition API examples
-- **Composition API demos:** component hierarchy, mixins, exposing child components, custom directives, and global plugins
-- **Reactivity & lifecycle:** watch effects, `nextTick`, reactive updates
-- **Advanced apps:** shopping lists, SVG graphs
+The [GraalVM Maven Plugin](https://graalvm.github.io/native-build-tools/latest/maven-plugin.html) is used for both compilation and for generating native example artifacts.
 
-`Main.java` serves as a launcher to generate JavaScript bundles (`app.js`) from Java components, ensuring browser-ready execution.
+### Normal Build
 
----
-
-### Build Script
-
-The build script `build-script/build.sh` automates compilation and GraalVM WebImage generation.
-
-#### Configuration
-
-The script requires two paths:
-- `GRAALVM_BIN`: Path to the GraalVM `bin` directory (where `web-image` resides).
-- `JAVA_HOME_OVERRIDE`: Path to the JDK you want to force for compilation. (Optional)
-
-#### Input Options
-
-You can provide configuration either:
-
-1. **Command-line arguments**:
-   ```bash
-   ./build.sh <GRAALVM_BIN> <JAVA_HOME_OVERRIDE>
-   ```
-   
-2. **Configuration file (build.config)**:
-
-   Define `GRAALVM_BIN` and `JAVA_HOME_OVERRIDE` in `build.config`.
-
-   Example:
-    ```bash
-    # === GraalVM Build Configuration ===
-    # Path to GraalVM bin directory
-    GRAALVM_BIN=/home/<user>/Oracle/graal/sdk/mxbuild/linux-amd64/GRAALVM_181A492ACC_JAVA25/graalvm-181a492acc-java25-25.1.0-dev/bin
-
-    # Override JAVA_HOME (optional)
-    JAVA_HOME_OVERRIDE=/usr/lib/jvm/java-25-openjdk
-    ```
-
-### Steps Performed
-1. **Compile with Maven**
-
-   Runs `mvn clean package` with GraalVM native access enabled.
-2. **Generate JavaScript bundle**
-
-   Uses GraalVM `web-image` to generate a JavaScript bundle (`app.js`) from the compiled JAR.
-3. **Copy Artifacts**
-
-   Places the generated JavaScript bundle (`app.js`) into the `html-demo/` directory.
-
-#### Example Usage
+To build the library without examples:
 ```bash
-# Using command-line arguments
-./build.sh /path/to/graalvm/bin /usr/lib/jvm/java-25-openjdk
-
-# Using build.config
-./build.sh
+mvn clean package
+```
+This performs a standard Maven build and produces the main JAR file in:
+```
+target/
 ```
 
-After completion, the generated bundle will be available in:
+#### Notes
+- No JavaScript bundles are generated in this mode.
+- Use this build for standard library consumption or publishing to Maven repositories.
 
+### Build With Examples
+
+To include a **Vue example** generate browser-ready JavaScript bundles:
 ```bash
-html-demo/
+mvn clean package -Pexamples
 ```
+This will:
+- Compiles the project
+- Uses the GraalVM Maven plugin to build the **native-image vue example**
+- Places the example js file into:
+```
+target/js/
+```
+This js file is used in the HTML demo in `html-demo/`.
 
 ---
 

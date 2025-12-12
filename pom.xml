@@ -48,21 +48,18 @@
     </properties>
 
     <dependencies>
-        <!-- WebImage Interop Dependency -->
         <dependency>
             <groupId>io.github.atur256.graalvm-webimage-interop</groupId>
             <artifactId>graalvm-webimage-interop</artifactId>
             <version>0.0.1</version>
         </dependency>
 
-        <!-- JetBrains annotations -->
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>24.0.1</version>
         </dependency>
 
-        <!-- JUnit 5 for tests -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -72,56 +69,7 @@
 
     <build>
         <plugins>
-
-            <!-- Maven Antrun plugin -->
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <id>mkdir-js-dir</id>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <target>
-                                <mkdir dir="${project.build.directory}/js"/>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- GraalVM Native Plugin -->
-            <plugin>
-                <groupId>org.graalvm.buildtools</groupId>
-                <artifactId>native-maven-plugin</artifactId>
-                <version>0.11.3</version>
-                <extensions>true</extensions>
-                <executions>
-                    <execution>
-                        <id>build-native</id>
-                        <goals>
-                            <goal>compile-no-fork</goal>
-                        </goals>
-                        <phase>package</phase>
-                    </execution>
-                </executions>
-                <configuration>
-                    <mainClass>${main.class}</mainClass>
-                    <buildArgs>
-                        <option>--tool:svm-wasm</option>
-                        <option>-Dcom.oracle.graalvm.iswebimage=true</option>
-                        <option>-H:+UnlockExperimentalVMOptions</option>
-                        <option>-o</option>
-                        <option>${project.build.directory}/js/app</option>
-                        <option>-H:-ClosureCompiler</option>
-                    </buildArgs>
-                </configuration>
-            </plugin>
-
-            <!-- Compiler plugin -->
+            <!-- Maven Compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -135,14 +83,18 @@
                 </configuration>
             </plugin>
 
-            <!-- Surefire plugin for tests -->
+            <!-- Maven Antrun for JS dir -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.1.2</version>
-                <configuration>
-                    <useModulePath>false</useModulePath>
-                </configuration>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+            </plugin>
+
+            <!-- GraalVM Native Plugin -->
+            <plugin>
+                <groupId>org.graalvm.buildtools</groupId>
+                <artifactId>native-maven-plugin</artifactId>
+                <version>0.11.3</version>
+                <extensions>true</extensions>
             </plugin>
 
             <!-- Source JAR -->
@@ -173,11 +125,18 @@
                         <goals>
                             <goal>jar</goal>
                         </goals>
+                        <configuration>
+                            <sourcepath>${project.build.sourceDirectory}</sourcepath>
+                            <subpackages>io.github.atur256.graalvmvueinterop.api</subpackages>
+                            <encoding>UTF-8</encoding>
+                            <docencoding>UTF-8</docencoding>
+                            <charset>UTF-8</charset>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
 
-            <!-- GPG signing -->
+            <!-- GPG Signing -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
@@ -193,33 +152,97 @@
                 </executions>
             </plugin>
 
-            <!-- Shade plugin for executable JAR -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.5.0</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <transformers>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>${main.class}</mainClass>
-                                </transformer>
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-
+<!--            &lt;!&ndash; Shade Plugin for executable JAR &ndash;&gt;-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-shade-plugin</artifactId>-->
+<!--                <version>3.5.0</version>-->
+<!--            </plugin>-->
         </plugins>
     </build>
+
+    <!-- Profiles -->
+    <profiles>
+        <!-- Normal build without examples -->
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/examples/**</exclude>
+                                <exclude>**/Main.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Build with examples included -->
+        <profile>
+            <id>examples</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <!-- Rename, to clarify that this version includes the examples -->
+                <finalName>${project.artifactId}-with-examples</finalName>
+                <plugins>
+                    <!-- Create JS dir for examples -->
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>mkdir-js-dir</id>
+                                <phase>generate-sources</phase>
+                                <configuration>
+                                    <target>
+                                        <mkdir dir="${project.build.directory}/js"/>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- GraalVM native build for examples -->
+                    <plugin>
+                        <groupId>org.graalvm.buildtools</groupId>
+                        <artifactId>native-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>build-native</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>compile-no-fork</goal>
+                                </goals>
+                                <configuration>
+                                    <mainClass>${main.class}</mainClass>
+                                    <buildArgs>
+                                        <option>--tool:svm-wasm</option>
+                                        <option>-Dcom.oracle.graalvm.iswebimage=true</option>
+                                        <option>-H:+UnlockExperimentalVMOptions</option>
+                                        <option>-o</option>
+                                        <option>${project.build.directory}/js/app</option>
+                                        <option>-H:-ClosureCompiler</option>
+                                    </buildArgs>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <distributionManagement>
         <repository>
