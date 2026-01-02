@@ -18,6 +18,7 @@ package io.github.atur256.graalvmvueinterop.examples.basics.counter;
 
 import io.github.atur256.graalvmvueinterop.api.Component;
 import io.github.atur256.graalvmvueinterop.api.Vue;
+import io.github.atur256.graalvmvueinterop.api.VueApp;
 
 
 /**
@@ -38,6 +39,7 @@ public class CounterExample {
         Component component = new RootComponent();
 
         // Create and mount the Vue application
-        Vue.createApp(component).mount();
+        VueApp app = Vue.createApp(component);
+        app.mount();
     }
 }

@@ -41,15 +41,15 @@ public class VueApp {
         this.app = app;
     }
 
+    @JS.Coerce
+    @JS("return self.mount('#app')")
+    private native JSObject mountInternal(JSObject self);
+
     /**
      * Mounts the Vue application to the DOM element with id "#app".
      *
      * @return the root component instance as {@link JSObject}
      */
-    @JS.Coerce
-    @JS("return self.mount('#app')")
-    private native JSObject mountInternal(JSObject self);
-
     public JSObject mount() {
         return mountInternal(app);
     }
