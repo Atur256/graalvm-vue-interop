@@ -31,6 +31,6 @@ public class Main {
     public static void main(String[] args) {
 
         // Run a specific example
-        CounterExample.main(args);
+        HelloWorldExample.main(args);
     }
 }
