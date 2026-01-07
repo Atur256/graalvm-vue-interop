@@ -86,7 +86,7 @@ Represents a Vue application instance. Supports:
 This project depends on **GraalVM** with the [GraalVM WebImage Interop Extension](https://github.com/Atur256/graalvm-webimage-interop)
 Ensure GraalVM is installed and properly configured in your environment before attempting a build.
 
-**Download the latest GraalVM snapshot release** from the [official GraalVM Early Access GitHub releases](https://github.com/graalvm/oracle-graalvm-ea-builds/releases/tag/jdk-25e1-25.0.1-ea.06).
+**Download the latest GraalVM snapshot release** from the [official GraalVM Early Access GitHub releases](https://github.com/graalvm/oracle-graalvm-ea-builds/releases).
 
 The [GraalVM Maven Plugin](https://graalvm.github.io/native-build-tools/latest/maven-plugin.html) is used for both compilation and for generating native example artifacts.
 
