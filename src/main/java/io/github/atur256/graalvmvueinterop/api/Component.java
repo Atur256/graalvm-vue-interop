@@ -44,6 +44,13 @@ import org.graalvm.webimage.api.JSValue;
  */
 public abstract class Component extends JSObject {
 
+    /**
+     * Creates a new, empty {@link Component}.
+     */
+    protected Component() {
+        super();
+    }
+
     // Identification & composition
 
     /**
@@ -95,6 +102,8 @@ public abstract class Component extends JSObject {
     /**
      * Returns the reactive state for this component.
      * Subclasses should override this method to provide the component's reactive properties.
+     *
+     * @return a JSObject representing the reactive properties of the component
      */
     public JSObject data() {
         return JSObject.create();
@@ -130,6 +139,8 @@ public abstract class Component extends JSObject {
      * Returns Composition API bindings for this component.
      * <p>
      * Subclasses can override to expose reactive state and logic.
+     *
+     * @return a JSValue representing the component's Composition API bindings
      */
     public JSValue setup() {
         return JSValue.undefined();

@@ -16,7 +16,6 @@
 
 package io.github.atur256.graalvmvueinterop;
 
-import io.github.atur256.graalvmvueinterop.examples.basics.counter.CounterExample;
 import io.github.atur256.graalvmvueinterop.examples.basics.helloworld.HelloWorldExample;
 
 

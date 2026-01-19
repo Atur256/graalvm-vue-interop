@@ -111,6 +111,8 @@ public class VueApp {
 
     /**
      * Returns the underlying JSObject representing the Vue app.
+     *
+     * @return the JSObject instance backing this Vue app
      */
     public JSObject getJSObject() {
         return app;

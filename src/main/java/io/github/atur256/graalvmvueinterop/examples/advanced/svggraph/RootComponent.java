@@ -95,20 +95,12 @@ public class RootComponent extends Component {
 
         // Adds a new stat to the graph
         public JSFunction add = JSFunction.of((JSObject e) -> {
-            try {
-                JSFunction.fromArgs(new String[]{"obj"}, "obj.preventDefault();").invoke(e);
-
-                String newText = JSValue.checkedCoerce(newLabel.get("value"), String.class);
-                if(newText.isEmpty()) return;
-
-                JSArray arr = JSValue.checkedCoerce(stats.get("value"), JSArray.class);
-                arr.push(createItem(newText));
-
-                newLabel.set("value", JSString.of(""));
-            } catch (Exception ex) {
-                System.out.println("Exception caught!!!!");
-                ex.printStackTrace();
-            }
+            JSFunction.fromArgs(new String[]{"obj"}, "obj.preventDefault();").invokeRaw(e);
+            String newText = JSValue.checkedCoerce(newLabel.get("value"), String.class);
+            if(newText.isEmpty()) return;
+            JSArray arr = JSValue.checkedCoerce(stats.get("value"), JSArray.class);
+            arr.push(createItem(newText));
+            newLabel.set("value", JSString.of(""));
         });
 
         // Removes a stat from the graph (minimum of 3 stats required)

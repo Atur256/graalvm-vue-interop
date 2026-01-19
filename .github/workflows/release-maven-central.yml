@@ -1,0 +1,72 @@
+name: Release – Publish
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish:
+    needs: build-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set release version from tag
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          mvn versions:set -DnewVersion=$VERSION
+          mvn versions:commit
+
+      # Setup GraalVM
+      - name: Setup GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '25e1-ea'
+          distribution: 'graalvm'
+          cache: 'maven'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          native-image-job-reports: 'true'
+
+      # Verify GraalVM installation
+      - name: Verify GraalVM
+        run: |
+          java --version
+          native-image --version
+      
+      # Create sttings.xml file
+      - name: Configure Maven Settings
+        run: |
+          mkdir -p ~/.m2
+          cat > ~/.m2/settings.xml <<EOF
+          <settings>
+            <servers>
+              <server>
+                <id>central</id>
+                <username>${{ secrets.TOKEN_USERNAME }}</username>
+                <password>${{ secrets.TOKEN_PASSWORD }}</password>
+              </server>
+            </servers>
+          </settings>
+          EOF
+
+      # Import GPG key
+      - name: Import GPG key
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.gnupg
+          chmod 700 ~/.gnupg
+          printf "%b" "$GPG_PRIVATE_KEY" | gpg --batch --import || true
+          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
+          gpg --list-secret-keys --keyid-format LONG
+
+      # Publish to Maven Central
+      - name: Publish to Maven Central
+        env:
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          mvn clean deploy -P release \
+            -Dgpg.passphrase=$MAVEN_GPG_PASSPHRASE
+
