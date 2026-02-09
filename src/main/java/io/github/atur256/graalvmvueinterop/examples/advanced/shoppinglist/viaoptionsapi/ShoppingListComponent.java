@@ -59,9 +59,9 @@ public class ShoppingListComponent extends Component {
      */
     public static class Methods extends JSObject {
 
-        public JSFunction emitMessage = JSFunction.withThis((JSObject self, JSObject item) -> {
-            emit(self, "remove", item.get("id", Integer.class));
-        });
+        public JSFunction emitMessage = JSFunction.withThis((JSObject self, JSObject item) ->
+            emit(self, "remove", item.get("id", Integer.class))
+        );
     }
 
     /**

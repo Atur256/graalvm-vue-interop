@@ -75,9 +75,9 @@ public class ShoppingListComponent extends Component {
     public static class Setup extends JSObject {
 
         // Emits a 'remove' event with the item's ID
-        public JSFunction emitMessage = JSFunction.withThis((JSObject self, JSObject item) -> {
-            emit(self, "remove", item.get("id", Integer.class));
-        });
+        public JSFunction emitMessage = JSFunction.withThis((JSObject self, JSObject item) ->
+            emit(self, "remove", item.get("id", Integer.class))
+        );
     }
 
     /**
