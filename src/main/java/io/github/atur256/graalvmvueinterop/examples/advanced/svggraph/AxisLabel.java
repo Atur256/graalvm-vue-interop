@@ -18,7 +18,9 @@ package io.github.atur256.graalvmvueinterop.examples.advanced.svggraph;
 
 import io.github.atur256.graalvmvueinterop.api.Component;
 import io.github.atur256.graalvmwebimageinterop.builtin.JSFunction;
-import org.graalvm.webimage.api.*;
+import org.graalvm.webimage.api.JSNumber;
+import org.graalvm.webimage.api.JSObject;
+import org.graalvm.webimage.api.JSString;
 
 
 /**
@@ -69,22 +71,9 @@ public class AxisLabel extends Component {
      * Computed properties for derived geometry.
      */
     private static class Computed extends JSObject {
-
-        // Note: must be written entirely in JS due to a bug with GraalVM and Vue — `this` does not get passed correctly.
-        public JSFunction point = JSFunction.fromBody("""
-                    const value = this.stat.value;
-                    const index = this.index;
-                    const total = this.total;
-
-                    const x = 0;
-                    const y = -value * 0.8;
-                    const angle = ((Math.PI * 2) / total) * index;
-                    const cos = Math.cos(angle);
-                    const sin = Math.sin(angle);
-                    const tx = x * cos - y * sin + 100;
-                    const ty = x * sin + y * cos + 100;
-
-                    return { x: tx, y: ty };
-                """);
+        public JSFunction point = JSFunction.withThis((JSObject self) -> {
+            Props props = self.as(Props.class);
+            return PolyGraph.compute(props.stat, props.index.asInt(), props.total.asInt());
+        });
     }
 }

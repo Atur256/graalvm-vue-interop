@@ -19,7 +19,10 @@ package io.github.atur256.graalvmvueinterop.examples.advanced.svggraph;
 import io.github.atur256.graalvmvueinterop.api.Component;
 import io.github.atur256.graalvmwebimageinterop.builtin.JSArray;
 import io.github.atur256.graalvmwebimageinterop.builtin.JSFunction;
-import org.graalvm.webimage.api.*;
+import org.graalvm.webimage.api.JSNumber;
+import org.graalvm.webimage.api.JSObject;
+import org.graalvm.webimage.api.JSString;
+import org.graalvm.webimage.api.JSValue;
 
 
 /**
@@ -84,20 +87,40 @@ public class PolyGraph extends Component {
      */
     private static class Computed extends JSObject {
 
-        // Note: must be written entirely in JS due to a bug with GraalVM and Vue — `this` does not get passed correctly.
-        public JSFunction points = JSFunction.fromBody("""
-                return this.stats
-                    .map((stat, i) => {
-                        const x = 0;
-                        const y = -stat.value * 0.8;
-                        const angle = ((Math.PI * 2) / this.stats.length) * i;
-                        const cos = Math.cos(angle);
-                        const sin = Math.sin(angle);
-                        const tx = x * cos - y * sin + 100;
-                        const ty = x * sin + y * cos + 100;
-                        return `${tx},${ty}`;
-                    })
-                    .join(' ');
-                """);
+        public JSFunction points = JSFunction.withThis((JSObject self) -> {
+            JSArray stats = self.as(Props.class).stats;
+            int length = stats.length;
+            String joined = stats.map(JSFunction.of((JSObject stat, JSNumber i) -> {
+                var coords = compute(stat, i.asInt(), length);
+                return coords.x + "," + coords.y;
+            })).join(" ");
+            return JSString.of(joined);
+        });
+    }
+
+    public static class Coords extends JSObject {
+        public double x;
+        public double y;
+    }
+
+    public static Coords compute(JSObject stat, int index, int total) {
+        JSValue val = stat.get("value", JSValue.class);
+
+        double value;
+        if (val instanceof JSNumber) {
+            value = val.asDouble();
+        } else {
+            value = Double.parseDouble(val.asString());
+        }
+
+        double x = 0;
+        double y = -value * 0.8;
+        double angle = ((Math.PI * 2) / total) * index;
+        double cos = Math.cos(angle);
+        double sin = Math.sin(angle);
+        Coords coords = new Coords();
+        coords.x = x * cos - y * sin + 100;
+        coords.y = x * sin + y * cos + 100;
+        return coords;
     }
 }
