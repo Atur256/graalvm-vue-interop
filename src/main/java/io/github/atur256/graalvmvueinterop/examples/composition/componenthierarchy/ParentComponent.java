@@ -19,7 +19,10 @@ package io.github.atur256.graalvmvueinterop.examples.composition.componenthierar
 import io.github.atur256.graalvmvueinterop.api.Component;
 import io.github.atur256.graalvmvueinterop.api.Vue;
 import io.github.atur256.graalvmwebimageinterop.builtin.JSFunction;
-import org.graalvm.webimage.api.*;
+import org.graalvm.webimage.api.JS;
+import org.graalvm.webimage.api.JSNumber;
+import org.graalvm.webimage.api.JSObject;
+import org.graalvm.webimage.api.JSString;
 
 
 /**
@@ -97,25 +100,24 @@ public class ParentComponent extends Component {
          * Increments the reactive count value.
          * Note: count is a Vue ref, so we access and mutate its .value field.
          */
-        public JSFunction increment = JSFunction.withThis((JSObject data) -> {
-            int current = JSValue.checkedCoerce(data.get("count"), Integer.class);
-            data.set("count", JSNumber.of(current + 1));
+        public JSFunction increment = JSFunction.withThis((JSObject self) -> {
+            int current = self.get("count", Integer.class);
+            self.set("count", JSNumber.of(current + 1));
         });
 
         /**
          * Logs the component name to the browser console for debugging.
-         * <p>
-         * Note:
-         * - Must be written in raw JS due to GraalVM limitations with `this` binding in Java lambdas.
          */
-        public JSFunction printComponentName = JSFunction.fromBody("console.log(this.$options.name);");
+        public JSFunction printComponentName = JSFunction.withThis((JSObject self) ->
+                System.out.println(getName(self))
+        );
 
         /**
          * Updates grandMessage with the value received from the child event.
          */
-        public JSFunction handleChildEvent = JSFunction.withThis((JSObject data, JSString messageVal) -> {
+        public JSFunction handleChildEvent = JSFunction.withThis((JSObject self, JSString messageVal) -> {
             String msg = messageVal.asString();
-            data.set("grandMessage", msg);
+            self.set("grandMessage", msg);
             System.out.println("[Parent] Received message from child: " + msg);
         });
     }
@@ -133,8 +135,8 @@ public class ParentComponent extends Component {
      */
     private static class Computed extends JSObject {
 
-        public JSFunction doubledCount = JSFunction.of((JSObject thisObj) -> {
-            int count = JSValue.checkedCoerce(thisObj.get("count"), Integer.class);
+        public JSFunction doubledCount = JSFunction.withThis((JSObject self) -> {
+            int count = self.get("count", Integer.class);
             return JSNumber.of(count * 2);
         });
     }
@@ -153,4 +155,14 @@ public class ParentComponent extends Component {
             this.count = countRef;
         }
     }
+
+    /**
+     * Returns the Vue component name of the given component instance.
+     *
+     * @param object the Vue component instance whose name should be retrieved
+     * @return the component’s declared name, or {@code null} if none is defined
+     */
+    @JS.Coerce
+    @JS("return object.$options.name;")
+    public static native String getName(JSObject object);
 }

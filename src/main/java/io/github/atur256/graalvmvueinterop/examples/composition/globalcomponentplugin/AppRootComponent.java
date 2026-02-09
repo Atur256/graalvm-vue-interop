@@ -68,9 +68,9 @@ public class AppRootComponent extends Component {
      */
     private static class Methods extends JSObject {
 
-        public JSFunction onChildMessage = JSFunction.withThis((JSObject data, JSString msg) -> {
+        public JSFunction onChildMessage = JSFunction.withThis((JSObject self, JSString msg) -> {
             System.out.println("Parent received event: " + msg.asString());
-            data.set("childResponseMessage", msg.asString());
+            self.set("childResponseMessage", msg.asString());
         });
     }
 }

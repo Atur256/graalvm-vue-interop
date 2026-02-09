@@ -19,6 +19,7 @@ package io.github.atur256.graalvmvueinterop.examples.composition.componenthierar
 import io.github.atur256.graalvmvueinterop.api.Component;
 import io.github.atur256.graalvmwebimageinterop.builtin.JSArray;
 import io.github.atur256.graalvmwebimageinterop.builtin.JSFunction;
+import org.graalvm.webimage.api.JS;
 import org.graalvm.webimage.api.JSObject;
 import org.graalvm.webimage.api.JSString;
 
@@ -59,11 +60,22 @@ public class InjectedMessageComponent extends Component {
 
     /**
      * Vue method bindings for event emission.
-     * <p>
-     * Note: must be written entirely in JS due to a bug with GraalVM and Vue — `this` does not get passed correctly.
      */
     private static class Methods extends JSObject {
 
-        public JSFunction sendMessage = JSFunction.fromBody("this.$emit('childEvent', 'Hello from Grandchild!');");
+        public JSFunction sendMessage = JSFunction.withThis((JSObject self) ->
+                emit(self, "childEvent", "Hello from Grandchild!")
+        );
     }
+
+    /**
+     * Emits a custom Vue event from a child component to its parent.
+     *
+     * @param self       The Vue component instance from which to emit the event.
+     * @param methodName The name of the event to emit .
+     * @param param      The payload of the event.
+     */
+    @JS.Coerce
+    @JS(value = "self.$emit(methodName, param);")
+    public static native void emit(JSObject self, String methodName, Object param);
 }

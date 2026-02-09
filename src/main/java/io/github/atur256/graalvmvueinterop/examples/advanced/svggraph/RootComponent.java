@@ -23,7 +23,6 @@ import io.github.atur256.graalvmwebimageinterop.builtin.JSFunction;
 import org.graalvm.webimage.api.JSNumber;
 import org.graalvm.webimage.api.JSObject;
 import org.graalvm.webimage.api.JSString;
-import org.graalvm.webimage.api.JSValue;
 
 
 /**
@@ -47,7 +46,7 @@ public class RootComponent extends Component {
                         </svg>
                         <div v-for="stat in stats">
                             <label>{{stat.label}}</label>
-                            <input type="range" v-model="stat.value" min="0" max="100">
+                            <input type="range" v-model.number="stat.value" min="0" max="100">
                             <span>{{stat.value}}</span>
                             <button @click="remove(stat)" class="remove">X</button>
                         </div>
@@ -96,16 +95,16 @@ public class RootComponent extends Component {
         // Adds a new stat to the graph
         public JSFunction add = JSFunction.of((JSObject e) -> {
             JSFunction.fromArgs(new String[]{"obj"}, "obj.preventDefault();").invokeRaw(e);
-            String newText = JSValue.checkedCoerce(newLabel.get("value"), String.class);
+            String newText = newLabel.get("value", String.class);
             if(newText.isEmpty()) return;
-            JSArray arr = JSValue.checkedCoerce(stats.get("value"), JSArray.class);
+            JSArray arr = stats.get("value", JSArray.class);
             arr.push(createItem(newText));
             newLabel.set("value", JSString.of(""));
         });
 
         // Removes a stat from the graph (minimum of 3 stats required)
         public JSFunction remove = JSFunction.of((JSObject stat) -> {
-            JSArray arr = JSValue.checkedCoerce(stats.get("value"), JSArray.class);
+            JSArray arr = stats.get("value", JSArray.class);
             if(arr.length > 3) {
                 arr.splice(arr.indexOf(stat), 1);
             }

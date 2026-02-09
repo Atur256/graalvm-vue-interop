@@ -18,6 +18,7 @@ package io.github.atur256.graalvmvueinterop.examples.composition.globalcomponent
 
 import io.github.atur256.graalvmvueinterop.api.Component;
 import io.github.atur256.graalvmwebimageinterop.builtin.JSFunction;
+import org.graalvm.webimage.api.JS;
 import org.graalvm.webimage.api.JSObject;
 import org.graalvm.webimage.api.JSString;
 
@@ -64,7 +65,19 @@ public class ChildComponent extends Component {
      */
     private static class Methods extends JSObject {
 
-        // Note: must be written entirely in JS due to a bug with GraalVM and Vue — `this` does not get passed correctly.
-        public JSFunction emitMessageToParent = JSFunction.fromBody("this.$emit('childEvent', 'Hello from Child!');");
+        public JSFunction emitMessageToParent = JSFunction.withThis((JSObject self) ->
+                emit(self, "childEvent", "Hello from Child!")
+        );
     }
+
+    /**
+     * Emits a custom Vue event from a child component to its parent.
+     *
+     * @param self       The Vue component instance from which to emit the event.
+     * @param methodName The name of the event to emit .
+     * @param param      The payload of the event.
+     */
+    @JS.Coerce
+    @JS(value = "self.$emit(methodName, param);")
+    public static native void emit(JSObject self, String methodName, Object param);
 }

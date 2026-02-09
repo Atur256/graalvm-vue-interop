@@ -22,7 +22,6 @@ import io.github.atur256.graalvmwebimageinterop.builtin.JSFunction;
 import org.graalvm.webimage.api.JSNumber;
 import org.graalvm.webimage.api.JSObject;
 import org.graalvm.webimage.api.JSString;
-import org.graalvm.webimage.api.JSValue;
 
 
 /**
@@ -98,20 +97,26 @@ public class PolyGraph extends Component {
         });
     }
 
+    /**
+     * Represents a coordinate pair (x, y) used for plotting polygon points.
+     */
     public static class Coords extends JSObject {
         public double x;
         public double y;
     }
 
+    /**
+     * Computes the SVG coordinates for a polygon vertex based on the stat value,
+     * the index of the stat, and the total number of stats.
+     *
+     * @param stat  The stat object containing a numeric "value"
+     * @param index The index of the stat in the stats array
+     * @param total The total number of stats
+     * @return A Coords object with calculated x and y positions
+     */
     public static Coords compute(JSObject stat, int index, int total) {
-        JSValue val = stat.get("value", JSValue.class);
 
-        double value;
-        if (val instanceof JSNumber) {
-            value = val.asDouble();
-        } else {
-            value = Double.parseDouble(val.asString());
-        }
+        double value = stat.get("value", Double.class);
 
         double x = 0;
         double y = -value * 0.8;

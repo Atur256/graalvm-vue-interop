@@ -18,8 +18,10 @@ package io.github.atur256.graalvmvueinterop.examples.composition.mixins;
 
 import io.github.atur256.graalvmvueinterop.api.Component;
 import io.github.atur256.graalvmwebimageinterop.builtin.JSArray;
-import org.graalvm.webimage.api.*;
 import io.github.atur256.graalvmwebimageinterop.builtin.JSFunction;
+import org.graalvm.webimage.api.JSNumber;
+import org.graalvm.webimage.api.JSObject;
+import org.graalvm.webimage.api.JSString;
 
 
 /**
@@ -85,7 +87,10 @@ public class MixinComponent extends Component {
         // Method to increment sharedCount
         // Note: must be written entirely in JS due to a bug with GraalVM and Vue — `this` does not get passed correctly.
         public JSObject methods = new JSObject() {
-            public JSFunction increment = JSFunction.fromBody("this.sharedCount++");
+            public JSFunction increment = JSFunction.withThis((JSObject self) -> {
+                int current = self.get("sharedCount", Integer.class);
+                self.set("sharedCount", JSNumber.of(current + 1));
+            });
         };
 
         // Lifecycle hook triggered when component is created
@@ -106,7 +111,10 @@ public class MixinComponent extends Component {
 
         // Method to boost extraCount by 10
         public JSObject methods = new JSObject() {
-            public JSFunction boost = JSFunction.fromBody("this.extraCount += 10");
+            public JSFunction boost = JSFunction.withThis((JSObject self) -> {
+                int current = self.get("extraCount", Integer.class);
+                self.set("extraCount", JSNumber.of(current + 10));
+            });
         };
 
         // Lifecycle hook triggered when component is created

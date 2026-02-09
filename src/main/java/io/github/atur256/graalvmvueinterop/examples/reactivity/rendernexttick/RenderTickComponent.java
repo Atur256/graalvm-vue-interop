@@ -21,7 +21,6 @@ import io.github.atur256.graalvmvueinterop.api.Vue;
 import io.github.atur256.graalvmwebimageinterop.builtin.JSFunction;
 import org.graalvm.webimage.api.JSObject;
 import org.graalvm.webimage.api.JSString;
-import org.graalvm.webimage.api.JSValue;
 
 
 /**
@@ -59,9 +58,7 @@ public class RenderTickComponent extends Component {
         this.render = JSFunction.of(() -> Vue.h(
                 "div",
                 new Props(initialState),
-                Vue.h("span", new SpanProps(reactiveState),
-                        JSValue.checkedCoerce(reactiveState.get("message"), JSString.class)
-                )
+                Vue.h("span", new SpanProps(reactiveState), reactiveState.get("message", JSString.class))
         ));
     }
 
@@ -100,7 +97,8 @@ public class RenderTickComponent extends Component {
                 state.set("style", JSString.of("color: green; font-weight: bold; font-size: 24px;"));
 
                 // Deferred update after next tick
-                Vue.nextTick(JSFunction.of(() -> state.set("message", JSString.of("Final update after next tick!"))));
+                Vue.nextTick(JSFunction.of(() ->
+                        state.set("message", JSString.of("Final update after next tick!"))));
             });
         }
     }

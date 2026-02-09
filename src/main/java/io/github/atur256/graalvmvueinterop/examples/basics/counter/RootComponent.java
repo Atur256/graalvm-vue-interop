@@ -18,7 +18,9 @@ package io.github.atur256.graalvmvueinterop.examples.basics.counter;
 
 import io.github.atur256.graalvmvueinterop.api.Component;
 import io.github.atur256.graalvmwebimageinterop.builtin.JSFunction;
-import org.graalvm.webimage.api.*;
+import org.graalvm.webimage.api.JSNumber;
+import org.graalvm.webimage.api.JSObject;
+import org.graalvm.webimage.api.JSString;
 
 
 /**
@@ -86,15 +88,15 @@ public class RootComponent extends Component {
     private static class Methods extends JSObject {
 
         // Increments the counter by 1
-        public JSFunction increment = JSFunction.withThis((JSObject data) -> {
-            int current = JSValue.checkedCoerce(data.get("count"), Integer.class);
-            data.set("count", JSNumber.of(current + 1));
+        public JSFunction increment = JSFunction.withThis((JSObject self) -> {
+            int current = self.get("count", Integer.class);
+            self.set("count", JSNumber.of(current + 1));
         });
 
         // Decrements the counter by 1
-        public JSFunction decrement = JSFunction.withThis((JSObject data) -> {
-            int current = JSValue.checkedCoerce(data.get("count"), Integer.class);
-            data.set("count", JSNumber.of(current - 1));
+        public JSFunction decrement = JSFunction.withThis((JSObject self) -> {
+            int current = self.get("count", Integer.class);
+            self.set("count", JSNumber.of(current - 1));
         });
     }
 
@@ -109,8 +111,8 @@ public class RootComponent extends Component {
     private static class Computed extends JSObject {
 
         // Computes status label based on count value
-        public JSFunction status = JSFunction.of((JSObject data) -> {
-            int value = JSValue.checkedCoerce(data.get("count"), Integer.class);
+        public JSFunction status = JSFunction.of((JSObject self) -> {
+            int value = self.get("count", Integer.class);
             return JSString.of(value > 4 ? "High" : (value < 0 ? "Minus" : "Low"));
         });
     }

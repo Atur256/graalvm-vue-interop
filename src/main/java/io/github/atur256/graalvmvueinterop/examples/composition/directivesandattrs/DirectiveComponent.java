@@ -18,7 +18,10 @@ package io.github.atur256.graalvmvueinterop.examples.composition.directivesandat
 
 import io.github.atur256.graalvmvueinterop.api.Component;
 import io.github.atur256.graalvmwebimageinterop.builtin.JSFunction;
-import org.graalvm.webimage.api.*;
+import org.graalvm.webimage.api.JS;
+import org.graalvm.webimage.api.JSBoolean;
+import org.graalvm.webimage.api.JSObject;
+import org.graalvm.webimage.api.JSString;
 
 
 /**
@@ -63,7 +66,7 @@ public class DirectiveComponent extends Component {
     public static class Directives extends JSObject {
 
         /**
-         * Auto-focuses the bound element when the component is mounted.
+         * Autofocuses the bound element when the component is mounted.
          */
         public JSObject focus = new JSObject() {
             public JSFunction mounted = JSFunction.of(DirectiveComponent::focus);

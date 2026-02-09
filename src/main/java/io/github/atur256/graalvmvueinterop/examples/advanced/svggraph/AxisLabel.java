@@ -71,6 +71,7 @@ public class AxisLabel extends Component {
      * Computed properties for derived geometry.
      */
     private static class Computed extends JSObject {
+
         public JSFunction point = JSFunction.withThis((JSObject self) -> {
             Props props = self.as(Props.class);
             return PolyGraph.compute(props.stat, props.index.asInt(), props.total.asInt());

@@ -18,8 +18,10 @@ package io.github.atur256.graalvmvueinterop.examples.advanced.setup;
 
 import io.github.atur256.graalvmvueinterop.api.Component;
 import io.github.atur256.graalvmvueinterop.api.Vue;
-import org.graalvm.webimage.api.*;
+
 import io.github.atur256.graalvmwebimageinterop.builtin.JSFunction;
+import org.graalvm.webimage.api.JSObject;
+import org.graalvm.webimage.api.JSString;
 
 
 /**
@@ -76,14 +78,14 @@ public class SetupComponent extends Component {
 
         // Method to increment count
         public JSFunction increment = JSFunction.of(() ->
-                count.set("value", JSValue.checkedCoerce(count.get("value"), Integer.class) + 1));
+                count.set("value", count.get("value", Integer.class) + 1));
 
         // Reactive effect: runs whenever any reactive dependency used inside changes
         public JSObject watchEffect = Vue.watchEffect(JSFunction.of(() ->
-                System.out.println("[WatchEffect] count changed to: " + JSValue.checkedCoerce(count.get("value"), Integer.class))));
+                System.out.println("[WatchEffect] count changed to: " + count.get("value", Integer.class))));
 
         // Watcher: runs only when 'count' changes
         public JSObject watch = Vue.watch(count, JSFunction.of(() ->
-                System.out.println("[watch] count changed to: " + JSValue.checkedCoerce(count.get("value"), Integer.class))));
+                System.out.println("[watch] count changed to: " + count.get("value", Integer.class))));
     }
 }

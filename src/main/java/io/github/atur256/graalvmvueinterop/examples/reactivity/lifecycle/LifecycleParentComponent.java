@@ -19,7 +19,9 @@ package io.github.atur256.graalvmvueinterop.examples.reactivity.lifecycle;
 import io.github.atur256.graalvmvueinterop.api.Component;
 import io.github.atur256.graalvmvueinterop.api.VueApp;
 import io.github.atur256.graalvmwebimageinterop.builtin.JSFunction;
-import org.graalvm.webimage.api.*;
+import org.graalvm.webimage.api.JSBoolean;
+import org.graalvm.webimage.api.JSObject;
+import org.graalvm.webimage.api.JSString;
 
 
 /**
@@ -80,9 +82,10 @@ public class LifecycleParentComponent extends Component {
 
         /**
          * Toggles visibility of the child component
-         * Note: must be written entirely in JS due to a bug with GraalVM and Vue — `this` does not get passed correctly.
          */
-        public JSFunction toggle = JSFunction.fromBody("this.show = !this.show");
+        public JSFunction toggle = JSFunction.withThis((JSObject self) ->
+            self.set("show", JSBoolean.of(!self.get("show", Boolean.class)))
+        );
 
         // Unmounts the Vue app manually
         public JSFunction unmountApp;

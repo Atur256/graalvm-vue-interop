@@ -57,8 +57,6 @@ public class ExposeParentComponent extends Component {
 
         /**
          * Calls the exposed sayHello() method on the child via template ref.
-         * <p>
-         * Note: must be written entirely in JS due to a bug with GraalVM and Vue — `this` does not get passed correctly.
          */
         public JSFunction callChild = JSFunction.fromBody("this.$refs.childRef.sayHello();");
     }

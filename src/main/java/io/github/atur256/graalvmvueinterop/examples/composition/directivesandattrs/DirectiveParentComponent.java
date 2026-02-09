@@ -17,7 +17,8 @@
 package io.github.atur256.graalvmvueinterop.examples.composition.directivesandattrs;
 
 import io.github.atur256.graalvmvueinterop.api.Component;
-import org.graalvm.webimage.api.*;
+import org.graalvm.webimage.api.JSObject;
+import org.graalvm.webimage.api.JSString;
 
 
 /**

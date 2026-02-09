@@ -19,8 +19,7 @@ package io.github.atur256.graalvmvueinterop.examples.composition.componenthierar
 import io.github.atur256.graalvmvueinterop.api.Component;
 import io.github.atur256.graalvmwebimageinterop.builtin.JSArray;
 import io.github.atur256.graalvmwebimageinterop.builtin.JSFunction;
-import org.graalvm.webimage.api.JSObject;
-import org.graalvm.webimage.api.JSString;
+import org.graalvm.webimage.api.*;
 
 
 /**
@@ -72,21 +71,19 @@ public class MessageReceiverComponent extends Component {
         /**
          * Forwards the message received from the grandchild to the parent.
          * The original message is passed through unchanged.
-         * <p>
-         * Note:
-         * - Must be written entirely in JS due to a bug with GraalVM and Vue — `this` does not get passed correctly.
-         * - The `event` parameter is explicitly declared to avoid `$event` scoping issues.
          */
-        public JSFunction forwardMessageToParent = JSFunction.fromArgs(new String[]{"event"}, "console.log(event); this.$emit('childEvent', event);");
+        public JSFunction forwardMessageToParent = JSFunction.withThis((JSObject self, JSValue event) -> {
+            System.out.println(event.asString());
+            emit(self, "childEvent", event);
+        });
 
         /**
          * Decrements the injected count value.
-         * <p>
-         * Note:
-         * - Must be written entirely in JS due to a bug with GraalVM and Vue — `this` does not get passed correctly.
-         * - Injected values are attached directly to the component instance, not to `data()`.
          */
-        public JSFunction decrement = JSFunction.fromBody("this.count = this.count - 1;");
+        public JSFunction decrement = JSFunction.withThis((JSObject self) -> {
+            int current = JSValue.checkedCoerce(self.get("count"), Integer.class);
+            self.set("count", JSNumber.of(current - 1));
+        });
     }
 
     /**
@@ -108,4 +105,15 @@ public class MessageReceiverComponent extends Component {
 
         public JSString parentMessage;
     }
+
+    /**
+     * Emits a custom Vue event from a child component to its parent.
+     *
+     * @param self       The Vue component instance from which to emit the event.
+     * @param methodName The name of the event to emit .
+     * @param param      The payload of the event.
+     */
+    @JS.Coerce
+    @JS(value = "self.$emit(methodName, param);")
+    public static native void emit(JSObject self, String methodName, Object param);
 }

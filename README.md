@@ -124,12 +124,11 @@ This js file is used in the HTML demo in `html-demo/`.
 
 ## Limitations
 
-1. **`this` binding in Java-defined Vue functions** is unreliable. Functions requiring `this` must be written in JavaScript.
-2. **`setup()`** must be overridden only if using Composition API.
-3. **Deep watchers** must be anonymous `JSObject` instances.
-4. Vue’s **`extends`** option cannot be used due to Java keyword conflicts.
-5. **`compilerOptions`** are currently unsupported.
-6. **Server-side prefetch** (`serverPrefetch`) is not supported.
+1. **`setup()`** must be overridden only if using Composition API.
+2. **Deep watchers** must be anonymous `JSObject` instances.
+3. Vue’s **`extends`** option cannot be used due to Java keyword conflicts.
+4. **`compilerOptions`** are currently unsupported.
+5. **Server-side prefetch** (`serverPrefetch`) is not supported.
 
 ---
 
@@ -137,9 +136,7 @@ This js file is used in the HTML demo in `html-demo/`.
 
 Potential improvements include:
 
-1. **Enable JavaScript `this` access in Java**
-
-2. **Reduce boilerplate via reflection**
+1. **Reduce boilerplate via reflection**
    - Components could be defined using annotated fields and methods that automatically map to Vue options. This annotated class could then be automatically converted into the existing `Component` structure with `data()` and `methods` classes, reducing boilerplate. 
    - Example of annotated definition:
    ```java
@@ -198,11 +195,11 @@ Potential improvements include:
     }
     ```
 
-3. **Enhanced Composition API support**
+2. **Enhanced Composition API support**
     - Improve handling of the `setup` object and reactive bindings. 
     - Enable easier integration with `ref()`, `reactive()`, and returning values from `setup()` in Java.
 
-4. **Other improvements**
+3. **Other improvements**
    - Further integration with Vue 3 features while maintaining Java-first definitions.
    - Support for advanced reactivity patterns and cleaner interop with injected values and props.
 

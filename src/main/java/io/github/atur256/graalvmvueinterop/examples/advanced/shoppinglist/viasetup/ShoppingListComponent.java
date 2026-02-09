@@ -18,6 +18,7 @@ package io.github.atur256.graalvmvueinterop.examples.advanced.shoppinglist.viase
 
 import io.github.atur256.graalvmvueinterop.api.Component;
 import io.github.atur256.graalvmwebimageinterop.builtin.JSFunction;
+import org.graalvm.webimage.api.JS;
 import org.graalvm.webimage.api.JSNumber;
 import org.graalvm.webimage.api.JSObject;
 import org.graalvm.webimage.api.JSString;
@@ -74,8 +75,9 @@ public class ShoppingListComponent extends Component {
     public static class Setup extends JSObject {
 
         // Emits a 'remove' event with the item's ID
-        // Note: must be written entirely in JS due to a bug with GraalVM and Vue — `this` does not get passed correctly.
-        public JSFunction emitMessage = JSFunction.fromArgs(new String[]{"item"}, "this.$emit('remove', item.id);");
+        public JSFunction emitMessage = JSFunction.withThis((JSObject self, JSObject item) -> {
+            emit(self, "remove", item.get("id", Integer.class));
+        });
     }
 
     /**
@@ -92,4 +94,16 @@ public class ShoppingListComponent extends Component {
         public JSNumber index;
         public JSObject item;
     }
+
+
+    /**
+     * Emits a custom Vue event from a child component to its parent.
+     *
+     * @param self       The Vue component instance from which to emit the event.
+     * @param methodName The name of the event to emit .
+     * @param param      The payload of the event.
+     */
+    @JS.Coerce
+    @JS(value = "self.$emit(methodName, param);")
+    public static native void emit(JSObject self, String methodName, Object param);
 }

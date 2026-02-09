@@ -19,6 +19,7 @@ package io.github.atur256.graalvmvueinterop.examples.advanced.shoppinglist.viaop
 import io.github.atur256.graalvmvueinterop.api.Component;
 import io.github.atur256.graalvmwebimageinterop.builtin.JSArray;
 import io.github.atur256.graalvmwebimageinterop.builtin.JSFunction;
+import org.graalvm.webimage.api.JSBoolean;
 import org.graalvm.webimage.api.JSNumber;
 import org.graalvm.webimage.api.JSObject;
 import org.graalvm.webimage.api.JSString;
@@ -88,29 +89,36 @@ public class RootComponent extends Component {
     private static class Methods extends JSObject {
 
         // Adds a new item to the shopping list
-        // Note: must be written entirely in JS due to a bug with GraalVM and Vue — `this` does not get passed correctly.
-        public JSFunction addItem = JSFunction.fromBody("""
-                    const itemText = this.newItemText.trim();
-                    if (!itemText) return;
-                
-                    const newItem = {
-                      id: this.nextId,
-                      text: itemText
-                    };
-                
-                    this.shoppingList.push(newItem);
-                    this.newItemText = '';
-                    this.nextId++;
-                """);
+        public JSFunction addItem = JSFunction.withThis((JSObject self) -> {
+            String newItemText = self.get("newItemText", String.class).trim();
+
+            if(newItemText.isEmpty()) return;
+
+            int nextId = self.get("nextId", Integer.class);
+
+            ShoppingListItem newItem = new ShoppingListItem(nextId, newItemText);
+
+            JSArray shoppingList = self.get("shoppingList", JSArray.class);
+            shoppingList.push(newItem);
+            self.set("newItemText", "");
+        });
 
         // Removes an item from the shopping list by ID
-        // Note: must be written entirely in JS due to a bug with GraalVM and Vue — `this` does not get passed correctly.
-        public JSFunction removeItem = JSFunction.fromArgs(new String[]{"id"}, """
-                    const index = this.shoppingList.findIndex(item => item.id === id);
-                    if (index !== -1) {
-                      this.shoppingList.splice(index, 1);
-                    }
-                """);
+        public JSFunction removeItem = JSFunction.withThis((JSObject self, JSNumber id) -> {
+
+            int convertedId = id.asInt();
+            JSArray shoppingList = self.get("shoppingList", JSArray.class);
+
+            int index = shoppingList.findIndex(
+                    JSFunction.of((JSObject item) ->
+                            JSBoolean.of(item.get("id", Integer.class) == convertedId)
+                    )
+            );
+
+            if(index != -1) {
+                shoppingList.splice(index, 1);
+            }
+        });
     }
 
     /**
@@ -122,27 +130,32 @@ public class RootComponent extends Component {
     }
 
     /**
+     * Represents a single item in the shopping list.
+     * <ul>
+     *   <li>{@code id} – a unique integer identifier for the item, used for tracking and removal.</li>
+     *   <li>{@code text} – the display text of the shopping item (e.g., "Cheese").</li>
+     * </ul>
+     * <p>
+     */
+    public static class ShoppingListItem extends JSObject {
+
+        public int id;
+        public String text;
+
+        public ShoppingListItem(int id, String text) {
+            this.id = id;
+            this.text = text;
+        }
+    }
+
+    /**
      * Initializes the shopping list with default items.
      */
     private static JSArray createShoppingList() {
         return JSArray.of(
-                createItem(0, "Vegetables"),
-                createItem(1, "Cheese"),
-                createItem(2, "Whatever else humans are supposed to eat")
+                new ShoppingListItem(0, "Vegetables"),
+                new ShoppingListItem(1, "Cheese"),
+                new ShoppingListItem(2, "Whatever else humans are supposed to eat")
         );
-    }
-
-    /**
-     * Creates a single shopping list item.
-     *
-     * @param id   unique identifier
-     * @param text item description
-     * @return a {@link JSObject} representing the item
-     */
-    private static JSObject createItem(int id, String text) {
-        JSObject item = JSObject.create();
-        item.set("id", JSNumber.of(id));
-        item.set("text", JSString.of(text));
-        return item;
     }
 }

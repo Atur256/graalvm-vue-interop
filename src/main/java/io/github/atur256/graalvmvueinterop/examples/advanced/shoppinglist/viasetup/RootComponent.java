@@ -20,10 +20,10 @@ import io.github.atur256.graalvmvueinterop.api.Component;
 import io.github.atur256.graalvmvueinterop.api.Vue;
 import io.github.atur256.graalvmwebimageinterop.builtin.JSArray;
 import io.github.atur256.graalvmwebimageinterop.builtin.JSFunction;
+import org.graalvm.webimage.api.JSBoolean;
 import org.graalvm.webimage.api.JSNumber;
 import org.graalvm.webimage.api.JSObject;
 import org.graalvm.webimage.api.JSString;
-import org.graalvm.webimage.api.JSValue;
 
 
 /**
@@ -94,15 +94,15 @@ public class RootComponent extends Component {
 
         // Adds a new item to the shopping list
         public JSFunction addItem = JSFunction.of(() -> {
-            String itemText = JSValue.checkedCoerce(newItemText.get("value"), String.class);
+            String itemText = newItemText.get("value", String.class);
             if(itemText == null || itemText.trim().isEmpty()) return;
 
             newItemText.set("value", JSString.of(""));
-            int nextIdValue = JSValue.checkedCoerce(nextId.get("value"), Integer.class) + 1;
+            int nextIdValue = nextId.get("value", Integer.class) + 1;
             nextId.set("value", JSNumber.of(nextIdValue));
 
-            JSObject newItem = createItem(nextIdValue, itemText);
-            JSArray list = JSValue.checkedCoerce(shoppingList.get("value"), JSArray.class);
+            ShoppingListItem newItem = new ShoppingListItem(nextIdValue, itemText);
+            JSArray list = shoppingList.get("value", JSArray.class);
             list.push(newItem);
 
         });
@@ -110,18 +110,15 @@ public class RootComponent extends Component {
         // Remove an item from the shopping list
         public JSFunction removeItem = JSFunction.of((JSNumber idVal) -> {
             int id = idVal.asInt();
-            JSArray list = JSValue.checkedCoerce(shoppingList.get("value"), JSArray.class);
+            JSArray list = shoppingList.get("value", JSArray.class);
 
-            int index = -1;
-            for(int i = 0; i < list.length; i++) {
-                JSObject item = JSValue.checkedCoerce(list.get(i), JSObject.class);
-                if(JSValue.checkedCoerce(item.get("id"), Integer.class) == id) {
-                    index = i;
-                    break;
-                }
-            }
+            int index = list.findIndex(
+                    JSFunction.of((JSObject item) ->
+                            JSBoolean.of(item.get("id", Integer.class) == id)
+                    )
+            );
 
-            if(index >= 0) list.splice(index, 1);
+            if(index != -1) list.splice(index, 1);
         });
     }
 
@@ -134,27 +131,32 @@ public class RootComponent extends Component {
     }
 
     /**
+     * Represents a single item in the shopping list.
+     * <ul>
+     *   <li>{@code id} – a unique integer identifier for the item, used for tracking and removal.</li>
+     *   <li>{@code text} – the display text of the shopping item (e.g., "Cheese").</li>
+     * </ul>
+     * <p>
+     */
+    public static class ShoppingListItem extends JSObject {
+
+        public int id;
+        public String text;
+
+        public ShoppingListItem(int id, String text) {
+            this.id = id;
+            this.text = text;
+        }
+    }
+
+    /**
      * Initializes the shopping list with default items.
      */
     private static JSArray createShoppingList() {
         return JSArray.of(
-                createItem(0, "Vegetables"),
-                createItem(1, "Cheese"),
-                createItem(2, "Whatever else humans are supposed to eat")
+                new ShoppingListItem(0, "Vegetables"),
+                new ShoppingListItem(1, "Cheese"),
+                new ShoppingListItem(2, "Whatever else humans are supposed to eat")
         );
-    }
-
-    /**
-     * Creates a single shopping list item.
-     *
-     * @param id   unique identifier
-     * @param text item description
-     * @return a {@link JSObject} representing the item
-     */
-    private static JSObject createItem(int id, String text) {
-        JSObject item = JSObject.create();
-        item.set("id", JSNumber.of(id));
-        item.set("text", JSString.of(text));
-        return item;
     }
 }

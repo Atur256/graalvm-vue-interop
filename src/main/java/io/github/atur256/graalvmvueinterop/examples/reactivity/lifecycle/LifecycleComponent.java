@@ -18,7 +18,9 @@ package io.github.atur256.graalvmvueinterop.examples.reactivity.lifecycle;
 
 import io.github.atur256.graalvmvueinterop.api.Component;
 import io.github.atur256.graalvmwebimageinterop.builtin.JSFunction;
-import org.graalvm.webimage.api.*;
+import org.graalvm.webimage.api.JSBoolean;
+import org.graalvm.webimage.api.JSObject;
+import org.graalvm.webimage.api.JSString;
 
 
 /**
@@ -142,10 +144,10 @@ public class LifecycleComponent extends Component {
         public JSFunction updateMessage;
 
         public Methods() {
-            updateMessage = JSFunction.withThis((JSObject data) -> {
-                String current = JSValue.checkedCoerce(data.get("message"), String.class);
-                String updated = current + " updated";
-                data.set("message", JSString.of(updated));
+            updateMessage = JSFunction.withThis((JSObject self) -> {
+                String current = self.get("message", String.class);
+                String updated = current + " + updated";
+                self.set("message", JSString.of(updated));
             });
         }
     }

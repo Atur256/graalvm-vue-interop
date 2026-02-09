@@ -119,7 +119,7 @@ public class RootComponent extends Component {
              */
             set("handler", JSFunction.of((JSObject user) -> {
                 JSObject profile = (JSObject) user.get("profile");
-                String name = JSValue.checkedCoerce(profile.get("name"), String.class);
+                String name = profile.get("name", String.class);
                 System.out.println("[watch] user.profile.name changed to '" + name + "'");
             }));
             set("deep", JSBoolean.of(true));
@@ -132,23 +132,23 @@ public class RootComponent extends Component {
     private static class Methods extends JSObject {
 
         // Increments the count value
-        public JSFunction increment = JSFunction.withThis((JSObject data) -> {
-            int current = JSValue.checkedCoerce(data.get("count"), Integer.class);
-            data.set("count", current + 1);
+        public JSFunction increment = JSFunction.withThis((JSObject self) -> {
+            int current = self.get("count", Integer.class);
+            self.set("count", current + 1);
         });
 
         // Toggles the status between "idle" and "active"
-        public JSFunction toggleStatus = JSFunction.withThis((JSObject data) -> {
-            String current = JSValue.checkedCoerce(data.get("status"), String.class);
+        public JSFunction toggleStatus = JSFunction.withThis((JSObject self) -> {
+            String current = self.get("status", String.class);
             String next = current.equals("idle") ? "active" : "idle";
-            data.set("status", next);
+            self.set("status", next);
         });
 
         // Toggles the profile name between "Alice" and "Bob"
-        public JSFunction toggleProfileName = JSFunction.withThis((JSObject data) -> {
-            JSObject user = (JSObject) data.get("user");
+        public JSFunction toggleProfileName = JSFunction.withThis((JSObject self) -> {
+            JSObject user = (JSObject) self.get("user");
             JSObject profile = (JSObject) user.get("profile");
-            String current = JSValue.checkedCoerce(profile.get("name"), String.class);
+            String current = profile.get("name", String.class);
             String next = current.equals("Alice") ? "Bob" : "Alice";
             profile.set("name", JSString.of(next));
         });
@@ -160,10 +160,10 @@ public class RootComponent extends Component {
     private static class Computed extends JSObject {
 
         // Returns a greeting message based on the current profile name
-        public JSFunction greeting = JSFunction.withThis((JSObject data) -> {
-            JSObject user = (JSObject) data.get("user");
+        public JSFunction greeting = JSFunction.withThis((JSObject self) -> {
+            JSObject user = (JSObject) self.get("user");
             JSObject profile = (JSObject) user.get("profile");
-            String name = JSValue.checkedCoerce(profile.get("name"), String.class);
+            String name = profile.get("name", String.class);
             return JSString.of("Hello, " + name + "!");
         });
     }
