@@ -83,7 +83,7 @@ Represents a Vue application instance. Supports:
 
 ## Build & GraalVM Requirements
 
-This project depends on **GraalVM** with the [GraalVM WebImage Interop Extension](https://github.com/Atur256/graalvm-webimage-interop)
+This project depends on **GraalVM** with the [GraalVM WebImage Interop Extension](https://github.com/Atur256/graalvm-webimage-interop).
 Ensure GraalVM is installed and properly configured in your environment before attempting a build.
 
 **Download the latest GraalVM snapshot release** from the [official GraalVM Early Access GitHub releases](https://github.com/graalvm/oracle-graalvm-ea-builds/releases).
@@ -119,6 +119,30 @@ This will:
 target/js/
 ```
 This js file is used in the HTML demo in `html-demo/`.
+
+---
+
+## Maven Releases
+
+Stable releases of this library are published to **Maven Central**.
+
+### Maven Dependency
+
+```xml
+<!-- Source: https://mvnrepository.com/artifact/io.github.atur256.graalvm-vue-interop/graalvm-vue-interop -->
+<dependency>
+    <groupId>io.github.atur256.graalvm-vue-interop</groupId>
+    <artifactId>graalvm-vue-interop</artifactId>
+    <version>RELEASE_VERSION</version>
+    <scope>compile</scope>
+</dependency>
+```
+
+Replace `RELEASE_VERSION` with the desired version.
+
+### Maven Central
+
+All released versions of [GraalVM Vue Interop](https://mvnrepository.com/artifact/io.github.atur256.graalvm-vue-interop/graalvm-vue-interop) are available on Maven Central.
 
 ---
 
